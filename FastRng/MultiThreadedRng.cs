@@ -15,6 +15,8 @@ namespace FastRng
             private const int CAPACITY_RANDOM_NUMBERS_4_SOURCE = 16_000_000;
         #endif
         
+        private static readonly object SYNC = new object();
+        
         private readonly System.Random rng = new System.Random();
         private readonly CancellationTokenSource producerToken = new CancellationTokenSource();
         
@@ -63,22 +65,31 @@ namespace FastRng
                 //
                 
                 var buffer = new double[CAPACITY_RANDOM_NUMBERS_4_SOURCE];
-                for (var n = 0; n < buffer.Length && !cancellationToken.IsCancellationRequested; n++)
+                
+                //
+                // Random is not thread-safe!
+                // Because we using two threads, we ensure that one threads generates
+                // next bag of numbers while the other pumps its numbers into the channel.
+                //
+                lock (SYNC)
                 {
-                    #region Re-implementation of GetSampleForLargeRange() method of .NET
+                    for (var n = 0; n < buffer.Length && !cancellationToken.IsCancellationRequested; n++)
+                    {
+                        #region Re-implementation of GetSampleForLargeRange() method of .NET
 
-                    var result = random.Next(); // Notice: random.Next() is identical to InternalSample()
-                    var negative = random.Next() % 2 == 0; // Notice: random.Next() is identical to InternalSample()
-                    if (negative)
-                        result = -result;
+                        var result = random.Next(); // Notice: random.Next() is identical to InternalSample()
+                        var negative = random.Next() % 2 == 0; // Notice: random.Next() is identical to InternalSample()
+                        if (negative)
+                            result = -result;
                     
-                    double d = result;
-                    d += (int.MaxValue - 1); // get a number in range [0 .. 2 * Int32MaxValue - 1)
-                    d /= 2 * (uint)int.MaxValue - 1;
+                        double d = result;
+                        d += (int.MaxValue - 1); // get a number in range [0 .. 2 * Int32MaxValue - 1)
+                        d /= 2 * (uint)int.MaxValue - 1;
 
-                    #endregion
+                        #endregion
                     
-                    buffer[n] = d;
+                        buffer[n] = d;
+                    }
                 }
 
                 for (var n = 0; n < buffer.Length && !cancellationToken.IsCancellationRequested; n++) 
