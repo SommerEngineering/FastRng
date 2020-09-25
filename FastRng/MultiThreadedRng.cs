@@ -1,12 +1,17 @@
 using System;
 using System.Diagnostics.CodeAnalysis;
-using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Channels;
 using System.Threading.Tasks;
+using FastRng.Distributions;
 
 namespace FastRng
 {
+    /// <summary>
+    /// This class uses the George Marsaglia's MWC algorithm. The algorithm's implementation based loosely on John D.
+    /// Cook's (johndcook.com) implementation (https://www.codeproject.com/Articles/25172/Simple-Random-Number-Generation).
+    /// Thanks John for your work.
+    /// </summary>
     public sealed class MultiThreadedRng : IRandom
     {
         #if DEBUG
@@ -15,15 +20,23 @@ namespace FastRng
             private const int CAPACITY_RANDOM_NUMBERS_4_SOURCE = 16_000_000;
         #endif
         
-        private static readonly object SYNC = new object();
-        
-        private readonly System.Random rng = new System.Random();
         private readonly CancellationTokenSource producerToken = new CancellationTokenSource();
+        private readonly object syncUintGenerators = new object();
+        private readonly object syncUniformDistributedDoubleGenerators = new object();
+        private readonly Thread[] producerRandomUint = new Thread[2];
+        private readonly Thread[] producerRandomUniformDistributedDouble = new Thread[2];
         
-        private readonly Thread producerRandom1;
-        private readonly Thread producerRandom2;
+        private uint mW;
+        private uint mZ;
 
-        private readonly Channel<double> channelRandom = Channel.CreateBounded<double>(new BoundedChannelOptions(CAPACITY_RANDOM_NUMBERS_4_SOURCE)
+        private readonly Channel<uint> channelRandomUint = Channel.CreateBounded<uint>(new BoundedChannelOptions(CAPACITY_RANDOM_NUMBERS_4_SOURCE)
+        {
+            FullMode = BoundedChannelFullMode.Wait,
+            SingleReader = false,
+            SingleWriter = false,
+        });
+        
+        private readonly Channel<double> channelRandomUniformDistributedDouble = Channel.CreateBounded<double>(new BoundedChannelOptions(CAPACITY_RANDOM_NUMBERS_4_SOURCE)
         {
             FullMode = BoundedChannelFullMode.Wait,
             SingleReader = false,
@@ -34,61 +47,61 @@ namespace FastRng
 
         public MultiThreadedRng()
         {
-            this.producerRandom1 = new Thread(() => MultiThreadedRng.RandomProducer(this.rng, this.channelRandom.Writer, this.producerToken.Token)) {IsBackground = true};
-            this.producerRandom2 = new Thread(() => MultiThreadedRng.RandomProducer(this.rng, this.channelRandom.Writer, this.producerToken.Token)) {IsBackground = true};
-            this.producerRandom1.Start();
-            this.producerRandom2.Start();
+            //
+            // Initialize the mW and mZ by using
+            // the system's time.
+            //
+            var now = DateTime.Now;
+            var ticks = now.Ticks;
+            this.mW = (uint) (ticks >> 16);
+            this.mZ = (uint) (ticks % 4294967296);
+            this.StartProducerThreads();
         }
 
-        public MultiThreadedRng(int seed)
+        public MultiThreadedRng(uint seedU)
         {
-            this.rng = new Random(seed);
+            this.mW = seedU;
+            this.mZ = 362436069;
+            this.StartProducerThreads();
+        }
+        
+        public MultiThreadedRng(uint seedU, uint seedV)
+        {
+            this.mW = seedU;
+            this.mZ = seedV;
+            this.StartProducerThreads();
+        }
+
+        private void StartProducerThreads()
+        {
+            this.producerRandomUint[0] = new Thread(() => this.RandomProducerUint(this.channelRandomUint.Writer, this.producerToken.Token)) {IsBackground = true};
+            this.producerRandomUint[1] = new Thread(() => this.RandomProducerUint(this.channelRandomUint.Writer, this.producerToken.Token)) {IsBackground = true};
+            this.producerRandomUint[0].Start();
+            this.producerRandomUint[1].Start();
             
-            this.producerRandom1 = new Thread(() => MultiThreadedRng.RandomProducer(this.rng, this.channelRandom.Writer, this.producerToken.Token)) {IsBackground = true};
-            this.producerRandom2 = new Thread(() => MultiThreadedRng.RandomProducer(this.rng, this.channelRandom.Writer, this.producerToken.Token)) {IsBackground = true};
-            
-            this.producerRandom1.Start();
-            this.producerRandom2.Start();
+            this.producerRandomUniformDistributedDouble[0] = new Thread(() => this.RandomProducerUniformDistributedDouble(this.channelRandomUint.Reader, channelRandomUniformDistributedDouble.Writer, this.producerToken.Token)) {IsBackground = true};
+            this.producerRandomUniformDistributedDouble[1] = new Thread(() => this.RandomProducerUniformDistributedDouble(this.channelRandomUint.Reader, channelRandomUniformDistributedDouble.Writer, this.producerToken.Token)) {IsBackground = true};
+            this.producerRandomUniformDistributedDouble[0].Start();
+            this.producerRandomUniformDistributedDouble[1].Start();
         }
 
         #endregion
-        
+
+        #region Producers
+
         [ExcludeFromCodeCoverage]
-        private static async void RandomProducer(System.Random random, ChannelWriter<double> channelWriter, CancellationToken cancellationToken)
+        private async void RandomProducerUint(ChannelWriter<uint> channelWriter, CancellationToken cancellationToken)
         {
+            var buffer = new uint[CAPACITY_RANDOM_NUMBERS_4_SOURCE];
             while (!cancellationToken.IsCancellationRequested)
             {
-                //
-                // We using double as basis for anything. That's what .NET does internally as well, cf. https://github.com/dotnet/runtime/blob/6072e4d3a7a2a1493f514cdf4be75a3d56580e84/src/libraries/System.Private.CoreLib/src/System/Random.cs.
-                // random.NextDouble() returns Sample(). Next(min, max) uses GetSampleForLargeRange().
-                // Thus, we re-implement GetSampleForLargeRange() and use its numbers as source for everything. 
-                //
-                
-                var buffer = new double[CAPACITY_RANDOM_NUMBERS_4_SOURCE];
-                
-                //
-                // Random is not thread-safe!
-                // Because we using two threads, we ensure that one threads generates
-                // next bag of numbers while the other pumps its numbers into the channel.
-                //
-                lock (SYNC)
+                lock (syncUintGenerators)
                 {
                     for (var n = 0; n < buffer.Length && !cancellationToken.IsCancellationRequested; n++)
                     {
-                        #region Re-implementation of GetSampleForLargeRange() method of .NET
-
-                        var result = random.Next(); // Notice: random.Next() is identical to InternalSample()
-                        var negative = random.Next() % 2 == 0; // Notice: random.Next() is identical to InternalSample()
-                        if (negative)
-                            result = -result;
-                    
-                        double d = result;
-                        d += (int.MaxValue - 1); // get a number in range [0 .. 2 * Int32MaxValue - 1)
-                        d /= 2 * (uint)int.MaxValue - 1;
-
-                        #endregion
-                    
-                        buffer[n] = d;
+                        this.mZ = 36_969 * (this.mZ & 65_535) + (this.mZ >> 16);
+                        this.mW = 18_000 * (this.mW & 65_535) + (this.mW >> 16);
+                        buffer[n] = (this.mZ << 16) + this.mW;
                     }
                 }
 
@@ -96,25 +109,78 @@ namespace FastRng
                     await channelWriter.WriteAsync(buffer[n], cancellationToken);
             }
         }
+        
+        [ExcludeFromCodeCoverage]
+        private async void RandomProducerUniformDistributedDouble(ChannelReader<uint> channelReaderUint, ChannelWriter<double> channelWriter, CancellationToken cancellationToken)
+        {
+            var buffer = new double[CAPACITY_RANDOM_NUMBERS_4_SOURCE];
+            var randomUint = new uint[CAPACITY_RANDOM_NUMBERS_4_SOURCE];
+            while (!cancellationToken.IsCancellationRequested)
+            {
+                for (var n = 0; n < randomUint.Length; n++)
+                    randomUint[n] = await channelReaderUint.ReadAsync(cancellationToken);
+                
+                lock (syncUniformDistributedDoubleGenerators)
+                    for (var n = 0; n < buffer.Length && !cancellationToken.IsCancellationRequested; n++)
+                        buffer[n] = (randomUint[n] + 1.0) * 2.328306435454494e-10; // 2.328 => 1/(2^32 + 2)
+
+                for (var n = 0; n < buffer.Length && !cancellationToken.IsCancellationRequested; n++) 
+                    await channelWriter.WriteAsync(buffer[n], cancellationToken);
+            }
+        }
+
+        #endregion
 
         #region Implementing interface
 
-        public async Task<uint> NextNumber(uint rangeStart, uint rangeEnd, CancellationToken cancel = default(CancellationToken))
+        public async Task<double> GetUniformDouble(CancellationToken cancel = default) => await this.channelRandomUniformDistributedDouble.Reader.ReadAsync(cancel);
+
+        public async Task<uint> NextNumber(uint rangeStart, uint rangeEnd, IDistribution distribution, CancellationToken cancel = default)
         {
+            if (rangeStart > rangeEnd)
+            {
+                var tmp = rangeStart;
+                rangeStart = rangeEnd;
+                rangeEnd = tmp;
+            }
+            
             var range = rangeEnd - rangeStart;
-            return (uint) ((await this.channelRandom.Reader.ReadAsync(cancel) * range) + rangeStart);
+            distribution.Random = this;
+
+            var distributedValue = await distribution.GetDistributedValue(cancel);
+            return (uint) ((distributedValue * range) + rangeStart);
         }
 
-        public async Task<ulong> NextNumber(ulong rangeStart, ulong rangeEnd, CancellationToken cancel = default(CancellationToken))
+        public async Task<ulong> NextNumber(ulong rangeStart, ulong rangeEnd, IDistribution distribution, CancellationToken cancel = default(CancellationToken))
         {
+            if (rangeStart > rangeEnd)
+            {
+                var tmp = rangeStart;
+                rangeStart = rangeEnd;
+                rangeEnd = tmp;
+            }
+            
             var range = rangeEnd - rangeStart;
-            return (ulong) ((await this.channelRandom.Reader.ReadAsync(cancel) * range) + rangeStart);
+            distribution.Random = this;
+
+            var distributedValue = await distribution.GetDistributedValue(cancel);
+            return (ulong) ((distributedValue * range) + rangeStart);
         }
 
-        public async Task<float> NextNumber(float rangeStart, float rangeEnd, CancellationToken cancel = default(CancellationToken))
+        public async Task<float> NextNumber(float rangeStart, float rangeEnd, IDistribution distribution, CancellationToken cancel = default(CancellationToken))
         {
+            if (rangeStart > rangeEnd)
+            {
+                var tmp = rangeStart;
+                rangeStart = rangeEnd;
+                rangeEnd = tmp;
+            }
+            
             var range = rangeEnd - rangeStart;
-            return (float) ((await this.channelRandom.Reader.ReadAsync(cancel) * range) + rangeStart);
+            distribution.Random = this;
+
+            var distributedValue = await distribution.GetDistributedValue(cancel);
+            return (float) ((distributedValue * range) + rangeStart);
         }
 
         public void StopProducer() => this.producerToken.Cancel();
