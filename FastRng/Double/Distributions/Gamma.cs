@@ -27,7 +27,7 @@ namespace FastRng.Double.Distributions
         public async ValueTask<double> GetDistributedValue(CancellationToken token)
         {
             if (this.Random == null)
-                return 0;
+                return 0.0;
             
             // Implementation based on "A Simple Method for Generating Gamma Variables"
             // by George Marsaglia and Wai Wan Tsang.  ACM Transactions on Mathematical Software
