@@ -7,6 +7,6 @@ namespace FastRng.Double.Distributions
     {
         public IRandom Random { get; set; }
 
-        public Task<double> GetDistributedValue(CancellationToken token);
+        public ValueTask<double> GetDistributedValue(CancellationToken token);
     }
 }

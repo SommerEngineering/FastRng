@@ -133,9 +133,9 @@ namespace FastRng.Double
 
         #region Implementing interface
 
-        public async Task<double> GetUniform(CancellationToken cancel = default) => await this.channelRandomUniformDistributedDouble.Reader.ReadAsync(cancel);
+        public async ValueTask<double> GetUniform(CancellationToken cancel = default) => await this.channelRandomUniformDistributedDouble.Reader.ReadAsync(cancel);
 
-        public async Task<uint> NextNumber(uint rangeStart, uint rangeEnd, IDistribution distribution, CancellationToken cancel = default)
+        public async ValueTask<uint> NextNumber(uint rangeStart, uint rangeEnd, IDistribution distribution, CancellationToken cancel = default)
         {
             if (rangeStart > rangeEnd)
             {
@@ -151,7 +151,7 @@ namespace FastRng.Double
             return (uint) ((distributedValue * range) + rangeStart);
         }
 
-        public async Task<ulong> NextNumber(ulong rangeStart, ulong rangeEnd, IDistribution distribution, CancellationToken cancel = default(CancellationToken))
+        public async ValueTask<ulong> NextNumber(ulong rangeStart, ulong rangeEnd, IDistribution distribution, CancellationToken cancel = default(CancellationToken))
         {
             if (rangeStart > rangeEnd)
             {
@@ -167,7 +167,7 @@ namespace FastRng.Double
             return (ulong) ((distributedValue * range) + rangeStart);
         }
 
-        public async Task<float> NextNumber(float rangeStart, float rangeEnd, IDistribution distribution, CancellationToken cancel = default(CancellationToken))
+        public async ValueTask<float> NextNumber(float rangeStart, float rangeEnd, IDistribution distribution, CancellationToken cancel = default(CancellationToken))
         {
             if (rangeStart > rangeEnd)
             {

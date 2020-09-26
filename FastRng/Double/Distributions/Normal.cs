@@ -24,7 +24,7 @@ namespace FastRng.Double.Distributions
             }
         }
 
-        public async Task<double> GetDistributedValue(CancellationToken token = default)
+        public async ValueTask<double> GetDistributedValue(CancellationToken token = default)
         {
             if (this.Random == null)
                 return 0;
