@@ -133,7 +133,7 @@ namespace FastRng
 
         #region Implementing interface
 
-        public async Task<double> GetUniformDouble(CancellationToken cancel = default) => await this.channelRandomUniformDistributedDouble.Reader.ReadAsync(cancel);
+        public async Task<double> GetUniform(CancellationToken cancel = default) => await this.channelRandomUniformDistributedDouble.Reader.ReadAsync(cancel);
 
         public async Task<uint> NextNumber(uint rangeStart, uint rangeEnd, IDistribution distribution, CancellationToken cancel = default)
         {

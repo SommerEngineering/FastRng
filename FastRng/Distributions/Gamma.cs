@@ -49,7 +49,7 @@ namespace FastRng.Distributions
                     while (v <= 0.0);
                     
                     v = v * v * v;
-                    var u = await this.Random.GetUniformDouble(token);
+                    var u = await this.Random.GetUniform(token);
                     var xSquared = x * x;
                     
                     if (u < 1.0 - 0.0331 * xSquared * xSquared || Math.Log(u) < 0.5 * xSquared + d * (1.0 - v + Math.Log(v)))
@@ -61,7 +61,7 @@ namespace FastRng.Distributions
                 var dist = new Gamma{ Scale = 1, Shape = 1 + this.Shape};
                 
                 var g = await this.Random.NextNumber(0.0f, 1.0f, dist, token); // TODO: Use double
-                var w = await this.Random.GetUniformDouble(token);
+                var w = await this.Random.GetUniform(token);
                 return this.Scale * g * Math.Pow(w, 1.0 / this.Shape);
             }
         }

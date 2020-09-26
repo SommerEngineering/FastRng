@@ -28,9 +28,9 @@ namespace FastRng.Distributions
                 return 0;
 
             if(this.Mean == 1)
-                return -Math.Log(await this.Random.GetUniformDouble(token));
+                return -Math.Log(await this.Random.GetUniform(token));
             else
-                return this.Mean * -Math.Log(await this.Random.GetUniformDouble(token));
+                return this.Mean * -Math.Log(await this.Random.GetUniform(token));
         }
     }
 }

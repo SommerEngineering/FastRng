@@ -29,8 +29,8 @@ namespace FastRng.Distributions
             if (this.Random == null)
                 return 0;
 
-            var u1 = await this.Random.GetUniformDouble(token);
-            var u2 = await this.Random.GetUniformDouble(token);
+            var u1 = await this.Random.GetUniform(token);
+            var u2 = await this.Random.GetUniform(token);
             var r = Math.Sqrt(-2.0 * Math.Log(u1));
             var theta = 2.0 * Math.PI * u2;
             var value = r * Math.Sin(theta);

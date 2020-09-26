@@ -7,7 +7,7 @@ namespace FastRng
 {
     public interface IRandom
     {
-        public Task<double> GetUniformDouble(CancellationToken cancel = default);
+        public Task<double> GetUniform(CancellationToken cancel = default);
         
         public Task<uint> NextNumber(uint rangeStart, uint rangeEnd, IDistribution distribution, CancellationToken cancel = default);
         
