@@ -55,34 +55,38 @@ namespace FastRng.Double
             var ticks = now.Ticks;
             this.mW = (uint) (ticks >> 16);
             this.mZ = (uint) (ticks % 4294967296);
-            this.StartProducerThreads();
+            this.StartProducerThreads(deterministic: false);
         }
 
         public MultiThreadedRng(uint seedU)
         {
             this.mW = seedU;
             this.mZ = 362436069;
-            this.StartProducerThreads();
+            this.StartProducerThreads(deterministic: true);
         }
         
         public MultiThreadedRng(uint seedU, uint seedV)
         {
             this.mW = seedU;
             this.mZ = seedV;
-            this.StartProducerThreads();
+            this.StartProducerThreads(deterministic: true);
         }
 
-        private void StartProducerThreads()
+        private void StartProducerThreads(bool deterministic = false)
         {
             this.producerRandomUint[0] = new Thread(() => this.RandomProducerUint(this.channelRandomUint.Writer, this.producerTokenSource.Token)) {IsBackground = true};
             this.producerRandomUint[1] = new Thread(() => this.RandomProducerUint(this.channelRandomUint.Writer, this.producerTokenSource.Token)) {IsBackground = true};
             this.producerRandomUint[0].Start();
-            this.producerRandomUint[1].Start();
+            
+            if(!deterministic)
+                this.producerRandomUint[1].Start();
             
             this.producerRandomUniformDistributedDouble[0] = new Thread(() => this.RandomProducerUniformDistributedDouble(this.channelRandomUint.Reader, channelRandomUniformDistributedDouble.Writer, this.producerTokenSource.Token)) {IsBackground = true};
             this.producerRandomUniformDistributedDouble[1] = new Thread(() => this.RandomProducerUniformDistributedDouble(this.channelRandomUint.Reader, channelRandomUniformDistributedDouble.Writer, this.producerTokenSource.Token)) {IsBackground = true};
             this.producerRandomUniformDistributedDouble[0].Start();
-            this.producerRandomUniformDistributedDouble[1].Start();
+            
+            if(!deterministic)
+                this.producerRandomUniformDistributedDouble[1].Start();
         }
 
         #endregion
@@ -127,7 +131,7 @@ namespace FastRng.Double
                 {
                     for (var n = 0; n < randomUint.Length; n++)
                         randomUint[n] = await channelReaderUint.ReadAsync(cancellationToken);
-                
+
                     lock (syncUniformDistributedDoubleGenerators)
                         for (var n = 0; n < buffer.Length && !cancellationToken.IsCancellationRequested; n++)
                             buffer[n] = (randomUint[n] + 1.0) * 2.328306435454494e-10; // 2.328 => 1/(2^32 + 2)
