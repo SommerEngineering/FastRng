@@ -12,7 +12,9 @@ namespace FastRng.Double
         
         public ValueTask<ulong> NextNumber(ulong rangeStart, ulong rangeEnd, IDistribution distribution, CancellationToken cancel = default);
         
-        public ValueTask<float> NextNumber(float rangeStart, float rangeEnd, IDistribution distribution, CancellationToken cancel = default);
+        public ValueTask<double> NextNumber(double rangeStart, double rangeEnd, IDistribution distribution, CancellationToken cancel = default);
+        
+        public ValueTask<double> NextNumber(IDistribution distribution, CancellationToken cancel = default);
 
         public void StopProducer();
     }

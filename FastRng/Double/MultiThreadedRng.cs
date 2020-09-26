@@ -167,7 +167,7 @@ namespace FastRng.Double
             return (ulong) ((distributedValue * range) + rangeStart);
         }
 
-        public async ValueTask<float> NextNumber(float rangeStart, float rangeEnd, IDistribution distribution, CancellationToken cancel = default(CancellationToken))
+        public async ValueTask<double> NextNumber(double rangeStart, double rangeEnd, IDistribution distribution, CancellationToken cancel = default(CancellationToken))
         {
             if (rangeStart > rangeEnd)
             {
@@ -180,8 +180,10 @@ namespace FastRng.Double
             distribution.Random = this;
 
             var distributedValue = await distribution.GetDistributedValue(cancel);
-            return (float) ((distributedValue * range) + rangeStart);
+            return (distributedValue * range) + rangeStart;
         }
+
+        public async ValueTask<double> NextNumber(IDistribution distribution, CancellationToken cancel = default) => await this.NextNumber(0.0, 1.0, distribution, cancel);
 
         public void StopProducer() => this.producerToken.Cancel();
 

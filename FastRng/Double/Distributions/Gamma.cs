@@ -6,6 +6,8 @@ namespace FastRng.Double.Distributions
 {
     public sealed class Gamma : IDistribution
     {
+        private static readonly IDistribution NORMAL_DISTRIBUTION = new Normal();
+        
         private double shape = 1.0;
         
         public IRandom Random { get; set; }
@@ -35,7 +37,6 @@ namespace FastRng.Double.Distributions
             
             if (shape >= 1.0)
             {
-                var distNormal = new Normal();
                 var d = shape - 1.0 / 3.0;
                 var c = 1.0 / Math.Sqrt(9.0 * d);
                 while(true)
@@ -43,7 +44,7 @@ namespace FastRng.Double.Distributions
                     double x, v;
                     do
                     {
-                        x = await this.Random.NextNumber(0, 1, distNormal, token);
+                        x = await this.Random.NextNumber(NORMAL_DISTRIBUTION, token);
                         v = 1.0 + c * x;
                     }
                     while (v <= 0.0);
@@ -59,8 +60,7 @@ namespace FastRng.Double.Distributions
             else
             {
                 var dist = new Gamma{ Scale = 1, Shape = 1 + this.Shape};
-                
-                var g = await this.Random.NextNumber(0.0f, 1.0f, dist, token); // TODO: Use double
+                var g = await this.Random.NextNumber(dist, token);
                 var w = await this.Random.GetUniform(token);
                 return this.Scale * g * Math.Pow(w, 1.0 / this.Shape);
             }
