@@ -1,12 +1,17 @@
 using System;
+using System.Diagnostics.CodeAnalysis;
+using System.Linq;
 using System.Threading.Tasks;
 using FastRng.Double;
 using NUnit.Framework;
 
 namespace FastRngTests.Double.Distributions
 {
+    [ExcludeFromCodeCoverage]
     public class Uniform
     {
+        private readonly IRandom rng = new MultiThreadedRng();
+        
         [Test]
         [Category(TestCategories.COVER)]
         [Category(TestCategories.NORMAL)]
@@ -76,6 +81,156 @@ namespace FastRngTests.Double.Distributions
             Assert.That(kPlus, Is.LessThanOrEqualTo(cutoffHigh), "K+ is higher than high cutoff");
             Assert.That(kMinus, Is.GreaterThanOrEqualTo(cutoffLow), "K- is lower than low cutoff");
             Assert.That(kMinus, Is.LessThanOrEqualTo(cutoffHigh), "K- is lower than high cutoff");
+        }
+        
+        [Test]
+        [Category(TestCategories.COVER)]
+        [Category(TestCategories.NORMAL)]
+        public async Task TestUniformGeneratorWithRange01()
+        {
+            var samples = new double[1_000];
+            for (var n = 0; n < samples.Length; n++)
+                samples[n] = await rng.NextNumber(-1.0, 1.0, new FastRng.Double.Distributions.Uniform());
+            
+            rng.StopProducer();
+            Assert.That(samples.Min(), Is.GreaterThanOrEqualTo(-1.0), "Min is out of range");
+            Assert.That(samples.Max(), Is.LessThanOrEqualTo(1.0), "Max is out of range");
+        }
+        
+        [Test]
+        [Category(TestCategories.COVER)]
+        [Category(TestCategories.NORMAL)]
+        public async Task TestUniformGeneratorWithRange02()
+        {
+            var samples = new double[1_000];
+            for (var n = 0; n < samples.Length; n++)
+                samples[n] = await rng.NextNumber(0.0, 1.0, new FastRng.Double.Distributions.Uniform());
+            
+            Assert.That(samples.Min(), Is.GreaterThanOrEqualTo(0.0), "Min is out of range");
+            Assert.That(samples.Max(), Is.LessThanOrEqualTo(1.0), "Max is out of range");
+        }
+        
+        [Test]
+        [Category(TestCategories.COVER)]
+        [Category(TestCategories.NORMAL)]
+        public async Task TestRange05Uint()
+        {
+            var dist = new FastRng.Double.Distributions.Uniform();
+            var distribution = new uint[101];
+            var runs = 1_000_000;
+            for (var n = 0; n < runs; n++)
+                distribution[await rng.NextNumber(0, 100, dist)]++;
+            
+            for (var n = 0; n < distribution.Length - 1; n++)
+                Assert.That(distribution[n], Is.GreaterThan(0));
+        }
+        
+        [Test]
+        [Category(TestCategories.COVER)]
+        [Category(TestCategories.NORMAL)]
+        public async Task TestRange05Ulong()
+        {
+            var dist = new FastRng.Double.Distributions.Uniform();
+            var distribution = new uint[101];
+            var runs = 1_000_000;
+            for (var n = 0; n < runs; n++)
+                distribution[await rng.NextNumber(0UL, 100, dist)]++;
+            
+            for (var n = 0; n < distribution.Length - 1; n++)
+                Assert.That(distribution[n], Is.GreaterThan(0));
+        }
+        
+        [Test]
+        [Category(TestCategories.COVER)]
+        [Category(TestCategories.NORMAL)]
+        public async Task TestRange05Float()
+        {
+            var dist = new FastRng.Double.Distributions.Uniform();
+            var distribution = new uint[101];
+            var runs = 1_000_000;
+            for (var n = 0; n < runs; n++)
+                distribution[(uint)Math.Floor(await rng.NextNumber(0.0, 100.0, dist))]++;
+            
+            for (var n = 0; n < distribution.Length - 1; n++)
+                Assert.That(distribution[n], Is.GreaterThan(0));
+        }
+        
+        [Test]
+        [Category(TestCategories.NORMAL)]
+        public async Task TestDistribution001Uint()
+        {
+            var dist = new FastRng.Double.Distributions.Uniform();
+            var distribution = new uint[101];
+            var runs = 1_000_000;
+            for (var n = 0; n < runs; n++)
+                distribution[await rng.NextNumber(0, 100, dist)]++;
+            
+            Assert.That(distribution[..^1].Max() - distribution[..^1].Min(), Is.InRange(0, 600));
+        }
+        
+        [Test]
+        [Category(TestCategories.NORMAL)]
+        public async Task TestDistribution001Ulong()
+        {
+            var dist = new FastRng.Double.Distributions.Uniform();
+            var distribution = new uint[101];
+            var runs = 1_000_000;
+            for (var n = 0; n < runs; n++)
+                distribution[await rng.NextNumber(0UL, 100, dist)]++;
+            
+            Assert.That(distribution[..^1].Max() - distribution[..^1].Min(), Is.InRange(0, 600));
+        }
+        
+        [Test]
+        [Category(TestCategories.NORMAL)]
+        public async Task TestDistribution001Float()
+        {
+            var dist = new FastRng.Double.Distributions.Uniform();
+            var distribution = new uint[101];
+            var runs = 1_000_000;
+            for (var n = 0; n < runs; n++)
+                distribution[(uint)Math.Floor(await rng.NextNumber(0.0, 100.0, dist))]++;
+            
+            Assert.That(distribution[..^1].Max() - distribution[..^1].Min(), Is.InRange(0, 600));
+        }
+        
+        [Test]
+        [Category(TestCategories.LONG_RUNNING)]
+        public async Task TestDistribution002Uint()
+        {
+            var dist = new FastRng.Double.Distributions.Uniform();
+            var distribution = new uint[101];
+            var runs = 100_000_000;
+            for (var n = 0; n < runs; n++)
+                distribution[await rng.NextNumber(0, 100, dist)]++;
+            
+            Assert.That(distribution[..^1].Max() - distribution[..^1].Min(), Is.InRange(0, 6_000));
+        }
+        
+        [Test]
+        [Category(TestCategories.LONG_RUNNING)]
+        public async Task TestDistribution002Ulong()
+        {
+            var dist = new FastRng.Double.Distributions.Uniform();
+            var distribution = new uint[101];
+            var runs = 100_000_000;
+            for (var n = 0; n < runs; n++)
+                distribution[await rng.NextNumber(0UL, 100, dist)]++;
+            
+            Assert.That(distribution[..^1].Max() - distribution[..^1].Min(), Is.InRange(0, 6_000));
+        }
+        
+        [Test]
+        [Category(TestCategories.LONG_RUNNING)]
+        public async Task TestDistribution002Float()
+        {
+            var dist = new FastRng.Double.Distributions.Uniform();
+            var distribution = new uint[101];
+            var runs = 100_000_000;
+            for (var n = 0; n < runs; n++)
+                distribution[(uint)Math.Floor(await rng.NextNumber(0.0, 100.0, dist))]++;
+            
+            Assert.That(distribution[..^1].Max() - distribution[..^1].Min(), Is.InRange(0, 6_000));
         }
     }
 }
