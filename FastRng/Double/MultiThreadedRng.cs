@@ -20,7 +20,7 @@ namespace FastRng.Double
             private const int CAPACITY_RANDOM_NUMBERS_4_SOURCE = 16_000_000;
         #endif
         
-        private readonly CancellationTokenSource producerToken = new CancellationTokenSource();
+        private readonly CancellationTokenSource producerTokenSource = new CancellationTokenSource();
         private readonly object syncUintGenerators = new object();
         private readonly object syncUniformDistributedDoubleGenerators = new object();
         private readonly Thread[] producerRandomUint = new Thread[2];
@@ -74,13 +74,13 @@ namespace FastRng.Double
 
         private void StartProducerThreads()
         {
-            this.producerRandomUint[0] = new Thread(() => this.RandomProducerUint(this.channelRandomUint.Writer, this.producerToken.Token)) {IsBackground = true};
-            this.producerRandomUint[1] = new Thread(() => this.RandomProducerUint(this.channelRandomUint.Writer, this.producerToken.Token)) {IsBackground = true};
+            this.producerRandomUint[0] = new Thread(() => this.RandomProducerUint(this.channelRandomUint.Writer, this.producerTokenSource.Token)) {IsBackground = true};
+            this.producerRandomUint[1] = new Thread(() => this.RandomProducerUint(this.channelRandomUint.Writer, this.producerTokenSource.Token)) {IsBackground = true};
             this.producerRandomUint[0].Start();
             this.producerRandomUint[1].Start();
             
-            this.producerRandomUniformDistributedDouble[0] = new Thread(() => this.RandomProducerUniformDistributedDouble(this.channelRandomUint.Reader, channelRandomUniformDistributedDouble.Writer, this.producerToken.Token)) {IsBackground = true};
-            this.producerRandomUniformDistributedDouble[1] = new Thread(() => this.RandomProducerUniformDistributedDouble(this.channelRandomUint.Reader, channelRandomUniformDistributedDouble.Writer, this.producerToken.Token)) {IsBackground = true};
+            this.producerRandomUniformDistributedDouble[0] = new Thread(() => this.RandomProducerUniformDistributedDouble(this.channelRandomUint.Reader, channelRandomUniformDistributedDouble.Writer, this.producerTokenSource.Token)) {IsBackground = true};
+            this.producerRandomUniformDistributedDouble[1] = new Thread(() => this.RandomProducerUniformDistributedDouble(this.channelRandomUint.Reader, channelRandomUniformDistributedDouble.Writer, this.producerTokenSource.Token)) {IsBackground = true};
             this.producerRandomUniformDistributedDouble[0].Start();
             this.producerRandomUniformDistributedDouble[1].Start();
         }
@@ -92,40 +92,52 @@ namespace FastRng.Double
         [ExcludeFromCodeCoverage]
         private async void RandomProducerUint(ChannelWriter<uint> channelWriter, CancellationToken cancellationToken)
         {
-            var buffer = new uint[CAPACITY_RANDOM_NUMBERS_4_SOURCE];
-            while (!cancellationToken.IsCancellationRequested)
+            try
             {
-                lock (syncUintGenerators)
+                var buffer = new uint[CAPACITY_RANDOM_NUMBERS_4_SOURCE];
+                while (!cancellationToken.IsCancellationRequested)
                 {
-                    for (var n = 0; n < buffer.Length && !cancellationToken.IsCancellationRequested; n++)
+                    lock (syncUintGenerators)
                     {
-                        this.mZ = 36_969 * (this.mZ & 65_535) + (this.mZ >> 16);
-                        this.mW = 18_000 * (this.mW & 65_535) + (this.mW >> 16);
-                        buffer[n] = (this.mZ << 16) + this.mW;
+                        for (var n = 0; n < buffer.Length && !cancellationToken.IsCancellationRequested; n++)
+                        {
+                            this.mZ = 36_969 * (this.mZ & 65_535) + (this.mZ >> 16);
+                            this.mW = 18_000 * (this.mW & 65_535) + (this.mW >> 16);
+                            buffer[n] = (this.mZ << 16) + this.mW;
+                        }
                     }
-                }
 
-                for (var n = 0; n < buffer.Length && !cancellationToken.IsCancellationRequested; n++) 
-                    await channelWriter.WriteAsync(buffer[n], cancellationToken);
+                    for (var n = 0; n < buffer.Length && !cancellationToken.IsCancellationRequested; n++) 
+                        await channelWriter.WriteAsync(buffer[n], cancellationToken);
+                }
+            }
+            catch (OperationCanceledException)
+            {
             }
         }
         
         [ExcludeFromCodeCoverage]
         private async void RandomProducerUniformDistributedDouble(ChannelReader<uint> channelReaderUint, ChannelWriter<double> channelWriter, CancellationToken cancellationToken)
         {
-            var buffer = new double[CAPACITY_RANDOM_NUMBERS_4_SOURCE];
-            var randomUint = new uint[CAPACITY_RANDOM_NUMBERS_4_SOURCE];
-            while (!cancellationToken.IsCancellationRequested)
+            try
             {
-                for (var n = 0; n < randomUint.Length; n++)
-                    randomUint[n] = await channelReaderUint.ReadAsync(cancellationToken);
+                var buffer = new double[CAPACITY_RANDOM_NUMBERS_4_SOURCE];
+                var randomUint = new uint[CAPACITY_RANDOM_NUMBERS_4_SOURCE];
+                while (!cancellationToken.IsCancellationRequested)
+                {
+                    for (var n = 0; n < randomUint.Length; n++)
+                        randomUint[n] = await channelReaderUint.ReadAsync(cancellationToken);
                 
-                lock (syncUniformDistributedDoubleGenerators)
-                    for (var n = 0; n < buffer.Length && !cancellationToken.IsCancellationRequested; n++)
-                        buffer[n] = (randomUint[n] + 1.0) * 2.328306435454494e-10; // 2.328 => 1/(2^32 + 2)
+                    lock (syncUniformDistributedDoubleGenerators)
+                        for (var n = 0; n < buffer.Length && !cancellationToken.IsCancellationRequested; n++)
+                            buffer[n] = (randomUint[n] + 1.0) * 2.328306435454494e-10; // 2.328 => 1/(2^32 + 2)
 
-                for (var n = 0; n < buffer.Length && !cancellationToken.IsCancellationRequested; n++) 
-                    await channelWriter.WriteAsync(buffer[n], cancellationToken);
+                    for (var n = 0; n < buffer.Length && !cancellationToken.IsCancellationRequested; n++) 
+                        await channelWriter.WriteAsync(buffer[n], cancellationToken);
+                }
+            }
+            catch (OperationCanceledException)
+            {
             }
         }
 
@@ -133,7 +145,17 @@ namespace FastRng.Double
 
         #region Implementing interface
 
-        public async ValueTask<double> GetUniform(CancellationToken cancel = default) => await this.channelRandomUniformDistributedDouble.Reader.ReadAsync(cancel);
+        public async ValueTask<double> GetUniform(CancellationToken cancel = default)
+        {
+            try
+            {
+                return await this.channelRandomUniformDistributedDouble.Reader.ReadAsync(cancel);
+            }
+            catch (OperationCanceledException)
+            {
+                return double.NaN;
+            }
+        }
 
         public async ValueTask<uint> NextNumber(uint rangeStart, uint rangeEnd, IDistribution distribution, CancellationToken cancel = default)
         {
@@ -147,8 +169,15 @@ namespace FastRng.Double
             var range = rangeEnd - rangeStart;
             distribution.Random = this;
 
-            var distributedValue = await distribution.GetDistributedValue(cancel);
-            return (uint) ((distributedValue * range) + rangeStart);
+            try
+            {
+                var distributedValue = await distribution.GetDistributedValue(cancel);
+                return (uint) ((distributedValue * range) + rangeStart);
+            }
+            catch (OperationCanceledException)
+            {
+                return 0;
+            }
         }
 
         public async ValueTask<ulong> NextNumber(ulong rangeStart, ulong rangeEnd, IDistribution distribution, CancellationToken cancel = default(CancellationToken))
@@ -163,8 +192,15 @@ namespace FastRng.Double
             var range = rangeEnd - rangeStart;
             distribution.Random = this;
 
-            var distributedValue = await distribution.GetDistributedValue(cancel);
-            return (ulong) ((distributedValue * range) + rangeStart);
+            try
+            {
+                var distributedValue = await distribution.GetDistributedValue(cancel);
+                return (ulong) ((distributedValue * range) + rangeStart);
+            }
+            catch (OperationCanceledException)
+            {
+                return 0;
+            }
         }
 
         public async ValueTask<double> NextNumber(double rangeStart, double rangeEnd, IDistribution distribution, CancellationToken cancel = default(CancellationToken))
@@ -179,13 +215,20 @@ namespace FastRng.Double
             var range = rangeEnd - rangeStart;
             distribution.Random = this;
 
-            var distributedValue = await distribution.GetDistributedValue(cancel);
-            return (distributedValue * range) + rangeStart;
+            try
+            {
+                var distributedValue = await distribution.GetDistributedValue(cancel);
+                return (distributedValue * range) + rangeStart;
+            }
+            catch (OperationCanceledException)
+            {
+                return double.NaN;
+            }
         }
 
         public async ValueTask<double> NextNumber(IDistribution distribution, CancellationToken cancel = default) => await this.NextNumber(0.0, 1.0, distribution, cancel);
 
-        public void StopProducer() => this.producerToken.Cancel();
+        public void StopProducer() => this.producerTokenSource.Cancel();
 
         #endregion
     }
