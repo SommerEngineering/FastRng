@@ -37,7 +37,7 @@ namespace FastRng.Double.Distributions
         public async ValueTask<double> GetDistributedValue(CancellationToken token = default)
         {
             if (this.Random == null)
-                return System.Double.NaN;
+                return double.NaN;
             
             // There are more efficient methods for generating beta samples.
             // However such methods are a little more efficient and much more complicated.
