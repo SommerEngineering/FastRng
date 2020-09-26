@@ -172,16 +172,9 @@ namespace FastRng.Double
             
             var range = rangeEnd - rangeStart;
             distribution.Random = this;
-
-            try
-            {
-                var distributedValue = await distribution.GetDistributedValue(cancel);
-                return (uint) ((distributedValue * range) + rangeStart);
-            }
-            catch (OperationCanceledException)
-            {
-                return 0;
-            }
+            
+            var distributedValue = await distribution.GetDistributedValue(cancel);
+            return (uint) ((distributedValue * range) + rangeStart);
         }
 
         public async ValueTask<ulong> NextNumber(ulong rangeStart, ulong rangeEnd, IDistribution distribution, CancellationToken cancel = default(CancellationToken))
@@ -195,16 +188,9 @@ namespace FastRng.Double
             
             var range = rangeEnd - rangeStart;
             distribution.Random = this;
-
-            try
-            {
-                var distributedValue = await distribution.GetDistributedValue(cancel);
-                return (ulong) ((distributedValue * range) + rangeStart);
-            }
-            catch (OperationCanceledException)
-            {
-                return 0;
-            }
+            
+            var distributedValue = await distribution.GetDistributedValue(cancel);
+            return (ulong) ((distributedValue * range) + rangeStart);
         }
 
         public async ValueTask<double> NextNumber(double rangeStart, double rangeEnd, IDistribution distribution, CancellationToken cancel = default(CancellationToken))
@@ -218,16 +204,9 @@ namespace FastRng.Double
             
             var range = rangeEnd - rangeStart;
             distribution.Random = this;
-
-            try
-            {
-                var distributedValue = await distribution.GetDistributedValue(cancel);
-                return (distributedValue * range) + rangeStart;
-            }
-            catch (OperationCanceledException)
-            {
-                return double.NaN;
-            }
+            
+            var distributedValue = await distribution.GetDistributedValue(cancel);
+            return (distributedValue * range) + rangeStart;
         }
 
         public async ValueTask<double> NextNumber(IDistribution distribution, CancellationToken cancel = default) => await this.NextNumber(0.0, 1.0, distribution, cancel);
