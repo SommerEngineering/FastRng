@@ -27,10 +27,10 @@ namespace FastRng.Double.Distributions
         public async ValueTask<double> GetDistributedValue(CancellationToken token = default)
         {
             if (this.Random == null)
-                return System.Double.NaN;
+                return double.NaN;
 
             var value = await this.Random.GetUniform(token);
-            return this.Median + scale * Math.Tan(Math.PI * (value - 0.5));
+            return 1.0 / (Math.PI * this.Scale * (1 + Math.Pow((value - this.Median) / this.Scale, 2)));
         }
     }
 }
