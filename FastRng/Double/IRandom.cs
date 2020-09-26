@@ -1,9 +1,8 @@
-using System;
 using System.Threading;
 using System.Threading.Tasks;
-using FastRng.Distributions.Double;
+using FastRng.Double.Distributions;
 
-namespace FastRng
+namespace FastRng.Double
 {
     public interface IRandom
     {

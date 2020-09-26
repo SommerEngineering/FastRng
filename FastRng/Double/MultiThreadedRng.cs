@@ -3,9 +3,9 @@ using System.Diagnostics.CodeAnalysis;
 using System.Threading;
 using System.Threading.Channels;
 using System.Threading.Tasks;
-using FastRng.Distributions.Double;
+using FastRng.Double.Distributions;
 
-namespace FastRng
+namespace FastRng.Double
 {
     /// <summary>
     /// This class uses the George Marsaglia's MWC algorithm. The algorithm's implementation based loosely on John D.

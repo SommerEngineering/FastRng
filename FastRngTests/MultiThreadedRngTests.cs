@@ -2,9 +2,8 @@ using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Threading.Tasks;
-using FastRng;
-using FastRng.Distributions;
-using FastRng.Distributions.Double;
+using FastRng.Double;
+using FastRng.Double.Distributions;
 using NUnit.Framework;
 
 namespace FastRngTests

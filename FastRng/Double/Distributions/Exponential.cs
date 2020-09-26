@@ -2,7 +2,7 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace FastRng.Distributions.Double
+namespace FastRng.Double.Distributions
 {
     public sealed class Exponential : IDistribution
     {
