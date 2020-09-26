@@ -1,6 +1,7 @@
 using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using FastRng.Double;
 using FastRng.Double.Distributions;
@@ -260,6 +261,37 @@ namespace FastRngTests.Double
                 distribution[(uint)Math.Floor(await rng.NextNumber(0.0, 100.0, dist))]++;
             
             Assert.That(distribution[..^1].Max() - distribution[..^1].Min(), Is.InRange(0, 6_000));
+        }
+
+        [Test]
+        [Category(TestCategories.COVER)]
+        [Category(TestCategories.NORMAL)]
+        public async Task TestStoppingProducers01()
+        {
+            var rng = new MultiThreadedRng();
+            rng.StopProducer();
+
+            var masterToken = new CancellationTokenSource(TimeSpan.FromSeconds(16)).Token;
+            var wasCanceled = false;
+            
+            while(true)
+            {
+                var tokenSource = new CancellationTokenSource(TimeSpan.FromSeconds(3));
+                await rng.GetUniform(tokenSource.Token);
+                if (tokenSource.IsCancellationRequested)
+                {
+                    wasCanceled = true;
+                    break;
+                }
+
+                if (masterToken.IsCancellationRequested)
+                {
+                    break;
+                }
+            }
+            
+            Assert.That(masterToken.IsCancellationRequested, Is.False, "Master token was used to stop test");
+            Assert.That(wasCanceled, Is.True, "The consumer was not canceled");
         }
     }
 }
