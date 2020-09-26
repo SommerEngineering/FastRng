@@ -10,6 +10,9 @@ namespace FastRngTests.Double.Distributions
     [ExcludeFromCodeCoverage]
     public class Normal
     {
+        [Test]
+        [Category(TestCategories.COVER)]
+        [Category(TestCategories.NORMAL)]
         public async Task TestNormalDistribution01()
         {
             const double DESIRED_MEAN = 2.0;
