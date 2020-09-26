@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 
 namespace FastRng.Double.Distributions
 {
-    public sealed class Cauchy : IDistribution
+    public sealed class CauchyLorentz : IDistribution
     {
         private double scale = 1.0;
         

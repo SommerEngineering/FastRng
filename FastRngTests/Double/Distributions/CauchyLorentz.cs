@@ -8,7 +8,7 @@ using NUnit.Framework;
 namespace FastRngTests.Double.Distributions
 {
     [ExcludeFromCodeCoverage]
-    public class Cauchy
+    public class CauchyLorentz
     {
         public void TestCauchyDistribution01()
         {
@@ -24,7 +24,7 @@ namespace FastRngTests.Double.Distributions
             var rng = new MultiThreadedRng();
             var samples = new double[1_000];
             for (var n = 0; n < samples.Length; n++)
-                samples[n] = await rng.NextNumber(-1.0, 1.0, new FastRng.Double.Distributions.Cauchy());
+                samples[n] = await rng.NextNumber(-1.0, 1.0, new FastRng.Double.Distributions.CauchyLorentz());
             
             rng.StopProducer();
             Assert.That(samples.Min(), Is.GreaterThanOrEqualTo(-1.0), "Min is out of range");
@@ -39,7 +39,7 @@ namespace FastRngTests.Double.Distributions
             var rng = new MultiThreadedRng();
             var samples = new double[1_000];
             for (var n = 0; n < samples.Length; n++)
-                samples[n] = await rng.NextNumber(0.0, 1.0, new FastRng.Double.Distributions.Cauchy());
+                samples[n] = await rng.NextNumber(0.0, 1.0, new FastRng.Double.Distributions.CauchyLorentz());
             
             rng.StopProducer();
             Assert.That(samples.Min(), Is.GreaterThanOrEqualTo(0.0), "Min is out of range");
@@ -51,7 +51,7 @@ namespace FastRngTests.Double.Distributions
         [Category(TestCategories.NORMAL)]
         public void ParameterTest01()
         {
-            var dist = new FastRng.Double.Distributions.Cauchy();
+            var dist = new FastRng.Double.Distributions.CauchyLorentz();
             
             Assert.Throws<ArgumentOutOfRangeException>(() => dist.Scale = 0);
             Assert.Throws<ArgumentOutOfRangeException>(() => dist.Scale = -78);
@@ -68,7 +68,7 @@ namespace FastRngTests.Double.Distributions
         [Category(TestCategories.NORMAL)]
         public async Task NoRandomNumberGenerator01()
         {
-            var dist = new FastRng.Double.Distributions.Cauchy();
+            var dist = new FastRng.Double.Distributions.CauchyLorentz();
             Assert.DoesNotThrowAsync(async () => await dist.GetDistributedValue());
             Assert.That(await dist.GetDistributedValue(), Is.NaN);
         }
