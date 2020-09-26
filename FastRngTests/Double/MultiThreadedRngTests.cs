@@ -323,5 +323,74 @@ namespace FastRngTests.Double
             Assert.That(rng1Sample, Is.Not.EquivalentTo(rng3Sample));
             Assert.That(rng2Sample, Is.Not.EquivalentTo(rng3Sample));
         }
+        
+        [Test]
+        [Category(TestCategories.COVER)]
+        [Category(TestCategories.NORMAL)]
+        public async Task TwoSeeds01()
+        {
+            var rng1 = new MultiThreadedRng(3, 6);
+            var rng2 = new MultiThreadedRng(3, 6);
+            var rng3 = new MultiThreadedRng(3, 7);
+            var rng4 = new MultiThreadedRng(6, 3);
+
+            var rng1Sample = new double[10];
+            for (var n = 0; n < rng1Sample.Length; n++)
+                rng1Sample[n] = await rng1.GetUniform();
+
+            var rng2Sample = new double[10];
+            for (var n = 0; n < rng2Sample.Length; n++)
+                rng2Sample[n] = await rng2.GetUniform();
+            
+            var rng3Sample = new double[10];
+            for (var n = 0; n < rng3Sample.Length; n++)
+                rng3Sample[n] = await rng3.GetUniform();
+            
+            var rng4Sample = new double[10];
+            for (var n = 0; n < rng4Sample.Length; n++)
+                rng4Sample[n] = await rng4.GetUniform();
+            
+            rng1.StopProducer();
+            rng2.StopProducer();
+            rng3.StopProducer();
+            rng4.StopProducer();
+            
+            Assert.That(rng1Sample, Is.EquivalentTo(rng2Sample));
+            Assert.That(rng1Sample, Is.Not.EquivalentTo(rng3Sample));
+            Assert.That(rng1Sample, Is.Not.EquivalentTo(rng4Sample));
+            Assert.That(rng2Sample, Is.Not.EquivalentTo(rng3Sample));
+            Assert.That(rng2Sample, Is.Not.EquivalentTo(rng4Sample));
+            Assert.That(rng3Sample, Is.Not.EquivalentTo(rng4Sample));
+        }
+        
+        [Test]
+        [Category(TestCategories.COVER)]
+        [Category(TestCategories.NORMAL)]
+        public async Task NoSeed01()
+        {
+            var rng1 = new MultiThreadedRng();
+            var rng2 = new MultiThreadedRng();
+            var rng3 = new MultiThreadedRng();
+
+            var rng1Sample = new double[10];
+            for (var n = 0; n < rng1Sample.Length; n++)
+                rng1Sample[n] = await rng1.GetUniform();
+            
+            var rng2Sample = new double[10];
+            for (var n = 0; n < rng2Sample.Length; n++)
+                rng2Sample[n] = await rng2.GetUniform();
+            
+            var rng3Sample = new double[10];
+            for (var n = 0; n < rng3Sample.Length; n++)
+                rng3Sample[n] = await rng3.GetUniform();
+            
+            rng1.StopProducer();
+            rng2.StopProducer();
+            rng3.StopProducer();
+            
+            Assert.That(rng1Sample, Is.Not.EquivalentTo(rng2Sample));
+            Assert.That(rng1Sample, Is.Not.EquivalentTo(rng3Sample));
+            Assert.That(rng2Sample, Is.Not.EquivalentTo(rng3Sample));
+        }
     }
 }
