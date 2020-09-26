@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using FastRng;
 using FastRng.Distributions;
+using FastRng.Distributions.Double;
 using NUnit.Framework;
 
 namespace FastRngTests

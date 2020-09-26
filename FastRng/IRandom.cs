@@ -1,7 +1,7 @@
 using System;
 using System.Threading;
 using System.Threading.Tasks;
-using FastRng.Distributions;
+using FastRng.Distributions.Double;
 
 namespace FastRng
 {
