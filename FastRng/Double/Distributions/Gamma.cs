@@ -26,7 +26,7 @@ namespace FastRng.Double.Distributions
 
         public double Scale { get; set; } = 1.0;
         
-        public async ValueTask<double> GetDistributedValue(CancellationToken token)
+        public async ValueTask<double> GetDistributedValue(CancellationToken token = default)
         {
             if (this.Random == null)
                 return System.Double.NaN;
