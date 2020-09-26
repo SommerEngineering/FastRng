@@ -293,5 +293,35 @@ namespace FastRngTests.Double
             Assert.That(masterToken.IsCancellationRequested, Is.False, "Master token was used to stop test");
             Assert.That(wasCanceled, Is.True, "The consumer was not canceled");
         }
+
+        [Test]
+        [Category(TestCategories.COVER)]
+        [Category(TestCategories.NORMAL)]
+        public async Task OneSeed01()
+        {
+            var rng1 = new MultiThreadedRng(6);
+            var rng2 = new MultiThreadedRng(6);
+            var rng3 = new MultiThreadedRng(7);
+
+            var rng1Sample = new double[10];
+            for (var n = 0; n < rng1Sample.Length; n++)
+                rng1Sample[n] = await rng1.GetUniform();
+            
+            var rng2Sample = new double[10];
+            for (var n = 0; n < rng2Sample.Length; n++)
+                rng2Sample[n] = await rng2.GetUniform();
+            
+            var rng3Sample = new double[10];
+            for (var n = 0; n < rng3Sample.Length; n++)
+                rng3Sample[n] = await rng3.GetUniform();
+            
+            rng1.StopProducer();
+            rng2.StopProducer();
+            rng3.StopProducer();
+            
+            Assert.That(rng1Sample, Is.EquivalentTo(rng2Sample));
+            Assert.That(rng1Sample, Is.Not.EquivalentTo(rng3Sample));
+            Assert.That(rng2Sample, Is.Not.EquivalentTo(rng3Sample));
+        }
     }
 }
