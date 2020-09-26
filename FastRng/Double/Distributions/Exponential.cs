@@ -6,7 +6,7 @@ namespace FastRng.Double.Distributions
 {
     public sealed class Exponential : IDistribution
     {
-        private double mean = 1;
+        private double mean = 1.0;
         
         public IRandom Random { get; set; }
 
@@ -15,7 +15,7 @@ namespace FastRng.Double.Distributions
             get => this.mean;
             set
             {
-                if(value <= 0)
+                if(value <= 0.0)
                     throw new ArgumentOutOfRangeException(message: "Mean must be greater than 0", null);
                 
                 this.mean = value;
@@ -27,7 +27,7 @@ namespace FastRng.Double.Distributions
             if (this.Random == null)
                 return 0.0;
 
-            if(this.Mean == 1)
+            if(this.Mean == 1.0)
                 return -Math.Log(await this.Random.GetUniform(token));
             else
                 return this.Mean * -Math.Log(await this.Random.GetUniform(token));

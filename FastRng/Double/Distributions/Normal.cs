@@ -6,18 +6,18 @@ namespace FastRng.Double.Distributions
 {
     public sealed class Normal : IDistribution
     {
-        private double standardDeviation = 1;
+        private double standardDeviation = 1.0;
         
         public IRandom Random { get; set; }
 
-        public double Mean { get; set; } = 0;
+        public double Mean { get; set; } = 0.0;
 
         public double StandardDeviation
         {
             get => this.standardDeviation;
             set
             {
-                if(value <= 0)
+                if(value <= 0.0)
                     throw new ArgumentOutOfRangeException(message: "Standard deviation must be greater than 0", null);
                 
                 this.standardDeviation = value;

@@ -6,7 +6,7 @@ namespace FastRng.Double.Distributions
 {
     public sealed class Gamma : IDistribution
     {
-        private double shape = 1;
+        private double shape = 1.0;
         
         public IRandom Random { get; set; }
 
@@ -15,14 +15,14 @@ namespace FastRng.Double.Distributions
             get => this.shape;
             set
             {
-                if(value <= 0)
+                if(value <= 0.0)
                     throw new ArgumentOutOfRangeException(message: "Shape must be greater than 0", null);
                 
                 this.shape = value;
             }
         }
 
-        public double Scale { get; set; } = 1;
+        public double Scale { get; set; } = 1.0;
         
         public async ValueTask<double> GetDistributedValue(CancellationToken token)
         {
