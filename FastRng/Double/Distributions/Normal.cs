@@ -27,7 +27,7 @@ namespace FastRng.Double.Distributions
         public async ValueTask<double> GetDistributedValue(CancellationToken token = default)
         {
             if (this.Random == null)
-                return 0.0;
+                return System.Double.NaN;
 
             var u1 = await this.Random.GetUniform(token);
             var u2 = await this.Random.GetUniform(token);
