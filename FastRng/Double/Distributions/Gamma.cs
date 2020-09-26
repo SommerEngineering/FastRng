@@ -35,9 +35,9 @@ namespace FastRng.Double.Distributions
             // by George Marsaglia and Wai Wan Tsang.  ACM Transactions on Mathematical Software
             // Vol 26, No 3, September 2000, pages 363-372.
             
-            if (shape >= 1.0)
+            if (this.Shape >= 1.0)
             {
-                var d = shape - 1.0 / 3.0;
+                var d = this.Shape - 1.0 / 3.0;
                 var c = 1.0 / Math.Sqrt(9.0 * d);
                 while(true)
                 {
