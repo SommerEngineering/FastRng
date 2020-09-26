@@ -26,7 +26,7 @@ namespace FastRng.Double.Distributions
         public async ValueTask<double> GetDistributedValue(CancellationToken token = default)
         {
             if (this.Random == null)
-                return System.Double.NaN;
+                return double.NaN;
 
             var normal = await this.Random.NextNumber(NORMAL_DISTRIBUTED, token);
             var chiSquare = await this.Random.NextNumber(new ChiSquare {DegreesOfFreedom = this.DegreesOfFreedom}, token);

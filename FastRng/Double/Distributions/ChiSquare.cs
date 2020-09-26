@@ -25,7 +25,7 @@ namespace FastRng.Double.Distributions
         public async ValueTask<double> GetDistributedValue(CancellationToken token = default)
         {
             if (this.Random == null)
-                return System.Double.NaN;
+                return double.NaN;
 
             return await this.Random.NextNumber(new Gamma{ Shape = 0.5 * this.DegreesOfFreedom, Scale = 2.0 }, token);
         }
