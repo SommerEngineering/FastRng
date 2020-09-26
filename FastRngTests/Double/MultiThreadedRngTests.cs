@@ -6,7 +6,7 @@ using FastRng.Double;
 using FastRng.Double.Distributions;
 using NUnit.Framework;
 
-namespace FastRngTests
+namespace FastRngTests.Double
 {
     [ExcludeFromCodeCoverage]
     public class MultiThreadedRngTests
