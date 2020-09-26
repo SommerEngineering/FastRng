@@ -93,7 +93,5 @@ namespace FastRngTests.Double.Distributions
             Assert.DoesNotThrowAsync(async () => await dist.GetDistributedValue());
             Assert.That(await dist.GetDistributedValue(), Is.NaN);
         }
-        
-        
     }
 }
