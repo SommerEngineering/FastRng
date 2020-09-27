@@ -15,6 +15,30 @@ namespace FastRngTests.Double.Distributions
         [Test]
         [Category(TestCategories.COVER)]
         [Category(TestCategories.NORMAL)]
+        public async Task TestUniformDistribution01()
+        {
+            const double A = 0.0;
+            const double B = 1.0;
+            const double MEAN = 0.5 * (A + B);
+            const double VARIANCE = (1.0 / 12.0) * (B - A) * (B - A);
+            
+            var stats = new RunningStatistics();
+            var rng = new MultiThreadedRng();
+            
+            for (var n = 0; n < 100_000; n++)
+                stats.Push(await rng.GetUniform());
+            
+            rng.StopProducer();
+            TestContext.WriteLine($"mean={MEAN} vs. {stats.Mean}");
+            TestContext.WriteLine($"variance={VARIANCE} vs {stats.Variance}");
+            
+            Assert.That(stats.Mean, Is.EqualTo(MEAN).Within(0.4), "Mean is out of range");
+            Assert.That(stats.Variance, Is.EqualTo(VARIANCE).Within(0.4), "Variance is out of range");
+        }
+        
+        [Test]
+        [Category(TestCategories.COVER)]
+        [Category(TestCategories.NORMAL)]
         public async Task KolmogorovSmirnovTest()
         {
             // Kolmogorov-Smirnov test for distributions.
