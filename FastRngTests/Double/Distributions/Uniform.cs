@@ -137,6 +137,38 @@ namespace FastRngTests.Double.Distributions
         [Test]
         [Category(TestCategories.COVER)]
         [Category(TestCategories.NORMAL)]
+        public async Task TestUniformGeneratorWithRange03()
+        {
+            var rng = new MultiThreadedRng();
+            var dist = new FastRng.Double.Distributions.Uniform { Random = rng }; // Test default parameters
+            
+            var samples = new double[1_000];
+            for (var n = 0; n < samples.Length; n++)
+                samples[n] = await dist.GetDistributedValue();
+            
+            rng.StopProducer();
+            Assert.That(samples.Min(), Is.GreaterThanOrEqualTo(0.0), "Min is out of range");
+            Assert.That(samples.Max(), Is.LessThanOrEqualTo(1.0), "Max is out of range");
+        }
+        
+        [Test]
+        [Category(TestCategories.COVER)]
+        [Category(TestCategories.NORMAL)]
+        public async Task TestUniformGeneratorWithRange04()
+        {
+            var rng = new MultiThreadedRng();
+            var samples = new double[1_000];
+            for (var n = 0; n < samples.Length; n++)
+                samples[n] = await rng.GetUniform();
+            
+            rng.StopProducer();
+            Assert.That(samples.Min(), Is.GreaterThanOrEqualTo(0.0), "Min is out of range");
+            Assert.That(samples.Max(), Is.LessThanOrEqualTo(1.0), "Max is out of range");
+        }
+        
+        [Test]
+        [Category(TestCategories.COVER)]
+        [Category(TestCategories.NORMAL)]
         public async Task TestRange05Uint()
         {
             var dist = new FastRng.Double.Distributions.Uniform();
