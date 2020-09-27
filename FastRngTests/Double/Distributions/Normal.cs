@@ -15,10 +15,10 @@ namespace FastRngTests.Double.Distributions
         [Category(TestCategories.NORMAL)]
         public async Task TestNormalDistribution01()
         {
-            const double DESIRED_MEAN = 2.0;
+            const double MEAN = 2.0;
             const double STANDARD_DEVIATION = 5.0;
             
-            var dist = new FastRng.Double.Distributions.Normal{ Mean = DESIRED_MEAN, StandardDeviation = STANDARD_DEVIATION };
+            var dist = new FastRng.Double.Distributions.Normal{ Mean = MEAN, StandardDeviation = STANDARD_DEVIATION };
             var stats = new RunningStatistics();
             var rng = new MultiThreadedRng();
             
@@ -26,13 +26,13 @@ namespace FastRngTests.Double.Distributions
                 stats.Push(await rng.NextNumber(dist));
             
             rng.StopProducer();
-            TestContext.WriteLine($"mean={DESIRED_MEAN} vs. {stats.Mean}");
+            TestContext.WriteLine($"mean={MEAN} vs. {stats.Mean}");
             TestContext.WriteLine($"variance={STANDARD_DEVIATION * STANDARD_DEVIATION} vs {stats.Variance}");
             
-            Assert.That(stats.Mean, Is.EqualTo(DESIRED_MEAN).Within(0.4), "Mean is out of range");
+            Assert.That(stats.Mean, Is.EqualTo(MEAN).Within(0.4), "Mean is out of range");
             Assert.That(stats.Variance, Is.EqualTo(STANDARD_DEVIATION*STANDARD_DEVIATION).Within(0.4), "Variance is out of range");
         }
-        
+
         [Test]
         [Category(TestCategories.COVER)]
         [Category(TestCategories.NORMAL)]
