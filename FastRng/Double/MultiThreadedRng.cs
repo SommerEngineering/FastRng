@@ -171,7 +171,7 @@ namespace FastRng.Double
             }
             
             var range = rangeEnd - rangeStart;
-            distribution.Random = this;
+            distribution.Random ??= this;
             
             var distributedValue = await distribution.GetDistributedValue(cancel);
             return (uint) ((distributedValue * range) + rangeStart);
