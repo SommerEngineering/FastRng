@@ -24,23 +24,23 @@ namespace FastRngTests.Double
             // See Knuth TAOCP vol 2, 3rd edition, page 232
             if (this.NumberRecords == 1)
             {
-                previousM = nextM = x;
-                previousS = 0.0;
+                this.previousM = this.nextM = x;
+                this.previousS = 0.0;
             }
             else
             {
-                nextM = previousM + (x - previousM) / this.NumberRecords;
-                nextS = previousS + (x - previousM) * (x - nextM);
+                this.nextM = this.previousM + (x - this.previousM) / this.NumberRecords;
+                this.nextS = this.previousS + (x - this.previousM) * (x - this.nextM);
      
                 // set up for next iteration
-                previousM = nextM;
-                previousS = nextS;
+                this.previousM = this.nextM;
+                this.previousS = this.nextS;
             }
         }
 
-        public double Mean => this.NumberRecords > 0 ? nextM : 0.0;
+        public double Mean => this.NumberRecords > 0 ? this.nextM : 0.0;
 
-        public double Variance => this.NumberRecords > 1 ? nextS / (NumberRecords - 1) : 0.0;
+        public double Variance => this.NumberRecords > 1 ? this.nextS / (this.NumberRecords - 1) : 0.0;
 
         public double StandardDeviation => Math.Sqrt(this.Variance);
     }
