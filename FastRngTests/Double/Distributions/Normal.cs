@@ -15,16 +15,21 @@ namespace FastRngTests.Double.Distributions
         [Category(TestCategories.NORMAL)]
         public async Task TestNormalDistribution01()
         {
-            const double MEAN = 2.0;
-            const double STANDARD_DEVIATION = 5.0;
+            const double MEAN = 0.5;
+            const double STANDARD_DEVIATION = 0.4;
             
-            var dist = new FastRng.Double.Distributions.Normal{ Mean = MEAN, StandardDeviation = STANDARD_DEVIATION };
+            var dist = new FastRng.Double.Distributions.Normal();
             var stats = new RunningStatistics();
             var rng = new MultiThreadedRng();
-            
+
+            var sample = new double[100_000];
             for (var n = 0; n < 100_000; n++)
-                stats.Push(await rng.NextNumber(dist));
-            
+            {
+                var nextNumber = await rng.NextNumber(dist);
+                sample[n] = nextNumber;
+                stats.Push(nextNumber);
+            }
+
             rng.StopProducer();
             TestContext.WriteLine($"mean={MEAN} vs. {stats.Mean}");
             TestContext.WriteLine($"variance={STANDARD_DEVIATION * STANDARD_DEVIATION} vs {stats.Variance}");
