@@ -83,23 +83,6 @@ namespace FastRngTests.Double.Distributions
         [Test]
         [Category(TestCategories.COVER)]
         [Category(TestCategories.NORMAL)]
-        public void ParameterTest01()
-        {
-            var dist = new FastRng.Double.Distributions.Normal();
-            
-            Assert.DoesNotThrow(() => dist.Mean = -45);
-            Assert.DoesNotThrow(() => dist.Mean = 15);
-            Assert.DoesNotThrow(() => dist.Mean = 0);
-
-            Assert.Throws<ArgumentOutOfRangeException>(() => dist.StandardDeviation = 0);
-            Assert.Throws<ArgumentOutOfRangeException>(() => dist.StandardDeviation = -78);
-            Assert.DoesNotThrow(() => dist.StandardDeviation = 0.0001);
-            Assert.DoesNotThrow(() => dist.StandardDeviation = 4);
-        }
-
-        [Test]
-        [Category(TestCategories.COVER)]
-        [Category(TestCategories.NORMAL)]
         public async Task NoRandomNumberGenerator01()
         {
             var dist = new FastRng.Double.Distributions.Normal();
