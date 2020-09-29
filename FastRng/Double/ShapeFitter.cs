@@ -36,7 +36,10 @@ namespace FastRng.Double
                 this.samples[nextBucket] += this.probabilities[nextBucket];
 
                 if (this.samples[nextBucket] >= 1.0)
+                {
+                    this.samples[nextBucket] = 0.0;
                     return nextNumber;
+                }
             }
         }
     }
