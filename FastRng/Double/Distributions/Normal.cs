@@ -40,7 +40,7 @@ namespace FastRng.Double.Distributions
             // return this.Mean + this.StandardDeviation * value;
             
             const double SQRT_2PI = 2.506628275;
-            var x = await this.Random.GetUniform(token); // BUG: It seems, that uniform is not uniform (enough) or RunningStatistics had specific issues
+            var x = await this.Random.GetUniform(token); // BUG: It seems, that uniform is not uniform (enough) or RunningStatistics had specific issues. Test, if Math.NET's uniform is better.
             return 1.0 / (this.StandardDeviation * SQRT_2PI) * Math.Exp(-0.5 * Math.Pow((x - this.Mean) / this.StandardDeviation, 2.0));
         }
     }
