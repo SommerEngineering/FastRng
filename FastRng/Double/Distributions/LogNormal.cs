@@ -28,7 +28,7 @@ namespace FastRng.Double.Distributions
             if (this.Random == null)
                 return double.NaN;
 
-            var normal = await this.Random.NextNumber(new Normal {Mean = this.Mu, StandardDeviation = this.Sigma}, token);
+            var normal = await this.Random.NextNumber(new Normal(), token); // TODO: Check all distributions. Used distributions must be static readonly!
             return Math.Exp(normal);
         }
     }
