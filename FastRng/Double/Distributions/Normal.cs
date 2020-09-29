@@ -1,4 +1,5 @@
 using System;
+using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -6,22 +7,30 @@ namespace FastRng.Double.Distributions
 {
     public sealed class Normal : IDistribution
     {
-        private double standardDeviation = 1.0;
+        private const double SQRT_2PI = 2.506628275;
+        private const double STDDEV = 0.4;
+        private const double MEAN = 0.5;
         
-        public IRandom Random { get; set; }
+        private ShapeFitter fitter;
+        private IRandom random;
 
-        public double Mean { get; set; } = 0.0;
-
-        public double StandardDeviation
+        public Normal()
         {
-            get => this.standardDeviation;
+        }
+        
+        public IRandom Random
+        {
+            get => this.random;
             set
             {
-                if(value <= 0.0)
-                    throw new ArgumentOutOfRangeException(message: "Standard deviation must be greater than 0", null);
-                
-                this.standardDeviation = value;
+                this.random = value;
+                this.fitter = new ShapeFitter(ShapeFunction, this.random, 100, 0.99);
             }
+        }
+        
+        private static double ShapeFunction(double x)
+        {
+            return 1.0 / (STDDEV * SQRT_2PI) * Math.Exp(-Math.Pow((x - MEAN) / STDDEV, 2.0));
         }
 
         public async ValueTask<double> GetDistributedValue(CancellationToken token = default)
@@ -29,19 +38,7 @@ namespace FastRng.Double.Distributions
             if (this.Random == null)
                 return double.NaN;
 
-            //
-            // Previously:
-            //
-            // var u1 = await this.Random.GetUniform(token);
-            // var u2 = await this.Random.GetUniform(token);
-            // var r = Math.Sqrt(-2.0 * Math.Log(u1));
-            // var theta = 2.0 * Math.PI * u2;
-            // var value = r * Math.Sin(theta);
-            // return this.Mean + this.StandardDeviation * value;
-            
-            const double SQRT_2PI = 2.506628275;
-            var x = await this.Random.GetUniform(token); // BUG: It seems, that uniform is not uniform (enough) or RunningStatistics had specific issues. Test, if Math.NET's uniform is better.
-            return 1.0 / (this.StandardDeviation * SQRT_2PI) * Math.Exp(-0.5 * Math.Pow((x - this.Mean) / this.StandardDeviation, 2.0));
+            return await this.fitter.NextNumber(); // TODO: Add token!
         }
     }
 }
