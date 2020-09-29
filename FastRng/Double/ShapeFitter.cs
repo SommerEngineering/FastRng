@@ -10,10 +10,12 @@ namespace FastRng.Double
         private readonly double[] samples;
         private readonly IRandom rng;
         private readonly ushort sampleSize;
+        private readonly double threshold;
         
-        public ShapeFitter(Func<double, double> shapeFunction, IRandom rng, ushort sampleSize = 100)
+        public ShapeFitter(Func<double, double> shapeFunction, IRandom rng, ushort sampleSize = 100, double threshold = 0.99)
         {
             this.rng = rng;
+            this.threshold = threshold;
             this.sampleSize = sampleSize;
             this.samples = new double[sampleSize];
             this.probabilities = new double[sampleSize];
@@ -35,7 +37,7 @@ namespace FastRng.Double
                 var nextBucket = (int)Math.Floor(nextNumber * this.sampleSize);
                 this.samples[nextBucket] += this.probabilities[nextBucket];
 
-                if (this.samples[nextBucket] >= 1.0)
+                if (this.samples[nextBucket] >= this.threshold)
                 {
                     this.samples[nextBucket] = 0.0;
                     return nextNumber;
