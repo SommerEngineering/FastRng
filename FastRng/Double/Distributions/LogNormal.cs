@@ -28,7 +28,7 @@ namespace FastRng.Double.Distributions
             if (this.Random == null)
                 return double.NaN;
 
-            var normal = await this.Random.NextNumber(new Normal(), token); // TODO: Check all distributions. Used distributions must be static readonly!
+            var normal = await this.Random.NextNumber(new Normal(), token); // TODO: Check all distributions. Used distributions must be static readonly! Probably, after refactoring, no distribution should depend on any other!
             return Math.Exp(normal);
         }
     }
