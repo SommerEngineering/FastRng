@@ -13,7 +13,7 @@ namespace FastRng.Double
         private readonly ushort sampleSize;
         private readonly double threshold;
         
-        public ShapeFitter(Func<double, double> shapeFunction, IRandom rng, ushort sampleSize = 100, double threshold = 0.99)
+        public ShapeFitter(Func<double, double> shapeFunction, IRandom rng, ushort sampleSize = 50, double threshold = 0.99)
         {
             this.rng = rng;
             this.threshold = threshold;
