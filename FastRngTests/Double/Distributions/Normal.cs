@@ -32,8 +32,8 @@ namespace FastRngTests.Double.Distributions
             TestContext.WriteLine($"mean={MEAN} vs. {stats.Mean}");
             TestContext.WriteLine($"variance={STANDARD_DEVIATION * STANDARD_DEVIATION} vs {stats.Variance}");
             
-            Assert.That(stats.Mean, Is.EqualTo(MEAN).Within(0.4), "Mean is out of range");
-            Assert.That(stats.Variance, Is.EqualTo(STANDARD_DEVIATION*STANDARD_DEVIATION).Within(0.1), "Variance is out of range");
+            Assert.That(stats.Mean, Is.EqualTo(MEAN).Within(0.01), "Mean is out of range");
+            Assert.That(stats.Variance, Is.EqualTo(STANDARD_DEVIATION*STANDARD_DEVIATION).Within(0.01), "Variance is out of range");
         }
 
         [Test]
