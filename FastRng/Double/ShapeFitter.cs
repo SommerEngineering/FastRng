@@ -1,5 +1,6 @@
 using System;
 using System.Runtime.CompilerServices;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace FastRng.Double
@@ -29,11 +30,11 @@ namespace FastRng.Double
             }
         }
 
-        public async ValueTask<double> NextNumber()
+        public async ValueTask<double> NextNumber(CancellationToken token = default)
         {
-            while (true)
+            while (!token.IsCancellationRequested)
             {
-                var nextNumber = await this.rng.GetUniform();
+                var nextNumber = await this.rng.GetUniform(token);
                 var nextBucket = (int)Math.Floor(nextNumber * this.sampleSize);
                 this.samples[nextBucket] += this.probabilities[nextBucket];
 
@@ -43,6 +44,8 @@ namespace FastRng.Double
                     return nextNumber;
                 }
             }
+
+            return double.NaN;
         }
     }
 }
