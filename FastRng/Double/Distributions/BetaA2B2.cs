@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 
 namespace FastRng.Double.Distributions
 {
-    public sealed class Beta : IDistribution
+    public sealed class BetaA2B2 : IDistribution
     {
         private const double ALPHA = 2;
         private const double BETA = 2;
@@ -13,7 +13,7 @@ namespace FastRng.Double.Distributions
         private ShapeFitter fitter;
         private IRandom random;
 
-        public Beta()
+        public BetaA2B2()
         {
         }
         
@@ -23,7 +23,7 @@ namespace FastRng.Double.Distributions
             set
             {
                 this.random = value;
-                this.fitter = new ShapeFitter(Beta.ShapeFunction, this.random, 50, 0.99);
+                this.fitter = new ShapeFitter(BetaA2B2.ShapeFunction, this.random, 50, 0.99);
             }
         }
 

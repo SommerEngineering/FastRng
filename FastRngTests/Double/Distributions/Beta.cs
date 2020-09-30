@@ -20,7 +20,7 @@ namespace FastRngTests.Double.Distributions
             const double MEAN = A / (A + B);
             const double VARIANCE = (A * B) / ((A + B) * (A + B) * (A + B + 1.0));
             
-            var dist = new FastRng.Double.Distributions.Beta();
+            var dist = new FastRng.Double.Distributions.BetaA2B2();
             var stats = new RunningStatistics();
             var rng = new MultiThreadedRng();
             
@@ -43,7 +43,7 @@ namespace FastRngTests.Double.Distributions
             var rng = new MultiThreadedRng();
             var samples = new double[1_000];
             for (var n = 0; n < samples.Length; n++)
-                samples[n] = await rng.NextNumber(-1.0, 1.0, new FastRng.Double.Distributions.Beta());
+                samples[n] = await rng.NextNumber(-1.0, 1.0, new FastRng.Double.Distributions.BetaA2B2());
             
             rng.StopProducer();
             Assert.That(samples.Min(), Is.GreaterThanOrEqualTo(-1.0), "Min out of range");
@@ -58,7 +58,7 @@ namespace FastRngTests.Double.Distributions
             var rng = new MultiThreadedRng();
             var samples = new double[1_000];
             for (var n = 0; n < samples.Length; n++)
-                samples[n] = await rng.NextNumber(0.0, 1.0, new FastRng.Double.Distributions.Beta());
+                samples[n] = await rng.NextNumber(0.0, 1.0, new FastRng.Double.Distributions.BetaA2B2());
             
             rng.StopProducer();
             Assert.That(samples.Min(), Is.GreaterThanOrEqualTo(0.0), "Min is out of range");
@@ -71,7 +71,7 @@ namespace FastRngTests.Double.Distributions
         public async Task TestBetaGeneratorWithRange03()
         {
             var rng = new MultiThreadedRng();
-            var dist = new FastRng.Double.Distributions.Beta { Random = rng }; // Test default parameters
+            var dist = new FastRng.Double.Distributions.BetaA2B2 { Random = rng }; // Test default parameters
             
             var samples = new double[1_000];
             for (var n = 0; n < samples.Length; n++)
@@ -87,7 +87,7 @@ namespace FastRngTests.Double.Distributions
         [Category(TestCategories.NORMAL)]
         public async Task NoRandomNumberGenerator01()
         {
-            var dist = new FastRng.Double.Distributions.Beta();
+            var dist = new FastRng.Double.Distributions.BetaA2B2();
             Assert.DoesNotThrowAsync(async () => await dist.GetDistributedValue());
             Assert.That(await dist.GetDistributedValue(), Is.NaN);
         }
