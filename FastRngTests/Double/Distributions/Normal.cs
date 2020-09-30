@@ -16,7 +16,7 @@ namespace FastRngTests.Double.Distributions
         public async Task TestNormalDistribution01()
         {
             const double MEAN = 0.5;
-            const double STANDARD_DEVIATION = 0.4;
+            const double STANDARD_DEVIATION = 0.2;
             
             var dist = new FastRng.Double.Distributions.Normal();
             var stats = new RunningStatistics();
