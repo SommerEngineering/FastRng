@@ -38,7 +38,7 @@ namespace FastRng.Double.Distributions
             if (this.Random == null)
                 return double.NaN;
 
-            return await this.fitter.NextNumber(); // TODO: Add token!
+            return await this.fitter.NextNumber(token);
         }
     }
 }
