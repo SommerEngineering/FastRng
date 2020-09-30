@@ -28,10 +28,7 @@ namespace FastRng.Double.Distributions
             }
         }
         
-        private static double ShapeFunction(double x)
-        {
-            return 1.0 / (STDDEV * SQRT_2PI) * Math.Exp(-Math.Pow((x - MEAN) / STDDEV, 2.0));
-        }
+        private static double ShapeFunction(double x) => 1.0 / (STDDEV * SQRT_2PI) * Math.Exp(-Math.Pow((x - MEAN) / STDDEV, 2.0));
 
         public async ValueTask<double> GetDistributedValue(CancellationToken token = default)
         {
