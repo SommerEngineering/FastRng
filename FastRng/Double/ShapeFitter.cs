@@ -36,8 +36,12 @@ namespace FastRng.Double
             {
                 var nextNumber = await this.rng.GetUniform(token);
                 var nextBucket = (int)Math.Floor(nextNumber * this.sampleSize);
+                // var firstInBucket = this.samples[nextBucket] == 0;
                 this.samples[nextBucket] += this.probabilities[nextBucket];
 
+                // if (firstInBucket) // TODO: Could be an option (optional)
+                //     return nextNumber;
+                
                 if (this.samples[nextBucket] >= this.threshold)
                 {
                     this.samples[nextBucket] -= this.threshold;
