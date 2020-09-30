@@ -24,7 +24,7 @@ namespace FastRng.Double.Distributions
             set
             {
                 this.random = value;
-                this.fitter = new ShapeFitter(Normal.ShapeFunction, this.random, 100, 0.99);
+                this.fitter = new ShapeFitter(Normal.ShapeFunction, this.random, 50, 0.99);
             }
         }
         
