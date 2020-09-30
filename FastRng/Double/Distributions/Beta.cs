@@ -6,47 +6,35 @@ namespace FastRng.Double.Distributions
 {
     public sealed class Beta : IDistribution
     {
-        private double a = 1.0;
-        private double b = 1.0;
-        public IRandom Random { get; set; }
+        private const double ALPHA = 2;
+        private const double BETA = 2;
+        private const double CONSTANT = 4; 
+        
+        private ShapeFitter fitter;
+        private IRandom random;
 
-        public double A
+        public Beta()
         {
-            get => this.a;
+        }
+        
+        public IRandom Random
+        {
+            get => this.random;
             set
             {
-                if(value <= 0.0)
-                    throw new ArgumentOutOfRangeException(message: "Parameter must be greater than 0", null);
-                
-                this.a = value;
+                this.random = value;
+                this.fitter = new ShapeFitter(Beta.ShapeFunction, this.random, 50, 0.99);
             }
         }
 
-        public double B
-        {
-            get => this.b;
-            set
-            {
-                if(value <= 0.0)
-                    throw new ArgumentOutOfRangeException(message: "Parameter must be greater than 0", null);
-                
-                this.b = value;
-            }
-        }
+        private static double ShapeFunction(double x) => CONSTANT * Math.Pow(x, ALPHA - 1) * Math.Pow(1 - x, BETA - 1);
 
         public async ValueTask<double> GetDistributedValue(CancellationToken token = default)
         {
             if (this.Random == null)
                 return double.NaN;
             
-            // There are more efficient methods for generating beta samples.
-            // However such methods are a little more efficient and much more complicated.
-            // For an explanation of why the following method works, see
-            // http://www.johndcook.com/distribution_chart.html#gamma_beta
- 
-            var u = await this.Random.NextNumber(new Gamma{Shape = this.A, Scale = 1.0}, token);
-            var v = await this.Random.NextNumber(new Gamma{Shape = this.B, Scale = 1.0}, token);
-            return u / (u + v);
+            return await this.fitter.NextNumber(token);
         }
     }
 }
