@@ -22,11 +22,9 @@ namespace FastRngTests.Double.Distributions
             var stats = new RunningStatistics();
             var rng = new MultiThreadedRng();
 
-            var sample = new double[100_000];
             for (var n = 0; n < 100_000; n++)
             {
                 var nextNumber = await rng.NextNumber(dist);
-                sample[n] = nextNumber;
                 stats.Push(nextNumber);
             }
 
