@@ -40,7 +40,7 @@ namespace FastRng.Double
 
                 if (this.samples[nextBucket] >= this.threshold)
                 {
-                    this.samples[nextBucket] = 0.0;
+                    this.samples[nextBucket] -= this.threshold;
                     return nextNumber;
                 }
             }
