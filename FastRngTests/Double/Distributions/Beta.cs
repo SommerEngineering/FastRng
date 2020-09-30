@@ -15,8 +15,8 @@ namespace FastRngTests.Double.Distributions
         [Category(TestCategories.NORMAL)]
         public async Task TestBetaDistribution01()
         {
-            const double A = 2;
-            const double B = 2;
+            const double A = 2.0;
+            const double B = 2.0;
             const double MEAN = A / (A + B);
             const double VARIANCE = (A * B) / ((A + B) * (A + B) * (A + B + 1.0));
             
