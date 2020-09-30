@@ -15,13 +15,12 @@ namespace FastRngTests.Double.Distributions
         [Category(TestCategories.NORMAL)]
         public async Task TestBetaDistribution01()
         {
-            const double A = 7.0;
-            const double B = 2.0;
-            
+            const double A = 2;
+            const double B = 2;
             const double MEAN = A / (A + B);
-            const double VARIANCE = MEAN * (1 - MEAN) / (A + B + 1);
+            const double VARIANCE = (A * B) / ((A + B) * (A + B) * (A + B + 1.0));
             
-            var dist = new FastRng.Double.Distributions.Beta{ A = A, B = B };
+            var dist = new FastRng.Double.Distributions.Beta();
             var stats = new RunningStatistics();
             var rng = new MultiThreadedRng();
             
