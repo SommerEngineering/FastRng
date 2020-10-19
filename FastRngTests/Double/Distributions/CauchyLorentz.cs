@@ -66,23 +66,6 @@ namespace FastRngTests.Double.Distributions
         [Test]
         [Category(TestCategories.COVER)]
         [Category(TestCategories.NORMAL)]
-        public void ParameterTest01()
-        {
-            var dist = new FastRng.Double.Distributions.CauchyLorentz();
-            
-            Assert.Throws<ArgumentOutOfRangeException>(() => dist.Scale = 0);
-            Assert.Throws<ArgumentOutOfRangeException>(() => dist.Scale = -78);
-            Assert.DoesNotThrow(() => dist.Scale = 0.0001);
-            Assert.DoesNotThrow(() => dist.Scale = 4);
-            
-            Assert.DoesNotThrow(() => dist.Median = -45);
-            Assert.DoesNotThrow(() => dist.Median = 15);
-            Assert.DoesNotThrow(() => dist.Median = 0);
-        }
-
-        [Test]
-        [Category(TestCategories.COVER)]
-        [Category(TestCategories.NORMAL)]
         public async Task NoRandomNumberGenerator01()
         {
             var dist = new FastRng.Double.Distributions.CauchyLorentz();

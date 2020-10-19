@@ -6,31 +6,31 @@ namespace FastRng.Double.Distributions
 {
     public sealed class CauchyLorentz : IDistribution
     {
-        private double scale = 1.0;
+        private const double CONSTANT = 0.31;
+        private const double SCALE = 0.1;
+        private const double MEDIAN = 0.0;
         
-        public IRandom Random { get; set; }
+        private ShapeFitter fitter;
+        private IRandom random;
         
-        public double Scale
+        public IRandom Random
         {
-            get => this.scale;
+            get => this.random;
             set
             {
-                if(value <= 0.0)
-                    throw new ArgumentOutOfRangeException(message: "Scale must be greater than 0", null);
-                
-                this.scale = value;
+                this.random = value;
+                this.fitter = new ShapeFitter(CauchyLorentz.ShapeFunction, this.random, 50, 0.98);
             }
         }
 
-        public double Median { get; set; } = 0.0;
-
+        private static double ShapeFunction(double x) => CONSTANT * (1.0 / (Math.PI * SCALE)) * ((SCALE * SCALE) / (Math.Pow(x - MEDIAN, 2) + (SCALE * SCALE)));
+        
         public async ValueTask<double> GetDistributedValue(CancellationToken token = default)
         {
             if (this.Random == null)
                 return double.NaN;
-
-            var value = await this.Random.GetUniform(token);
-            return 1.0 / (Math.PI * this.Scale * (1 + Math.Pow((value - this.Median) / this.Scale, 2)));
+            
+            return await this.fitter.NextNumber(token);
         }
     }
 }
