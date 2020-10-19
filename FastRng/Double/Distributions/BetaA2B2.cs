@@ -8,7 +8,7 @@ namespace FastRng.Double.Distributions
     {
         private const double ALPHA = 2;
         private const double BETA = 2;
-        private const double CONSTANT = 4; // TODO: Replace by formula with gamma
+        private const double CONSTANT = 4;
         
         private ShapeFitter fitter;
         private IRandom random;
@@ -23,7 +23,7 @@ namespace FastRng.Double.Distributions
             set
             {
                 this.random = value;
-                this.fitter = new ShapeFitter(BetaA2B2.ShapeFunction, this.random, 50, 0.99); // TODO: update threshold
+                this.fitter = new ShapeFitter(BetaA2B2.ShapeFunction, this.random, 50, 0.99);
             }
         }
 
