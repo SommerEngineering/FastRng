@@ -20,15 +20,19 @@ namespace FastRngTests.Double.Distributions
             
             var dist = new FastRng.Double.Distributions.Normal();
             var stats = new RunningStatistics();
+            var fra = new FrequencyAnalysis();
             var rng = new MultiThreadedRng();
 
             for (var n = 0; n < 100_000; n++)
             {
                 var nextNumber = await rng.NextNumber(dist);
                 stats.Push(nextNumber);
+                fra.CountThis(nextNumber);
             }
 
             rng.StopProducer();
+            fra.NormalizeAndPlotEvents(TestContext.WriteLine);
+            
             TestContext.WriteLine($"mean={MEAN} vs. {stats.Mean}");
             TestContext.WriteLine($"variance={STANDARD_DEVIATION * STANDARD_DEVIATION} vs {stats.Variance}");
             
@@ -43,8 +47,9 @@ namespace FastRngTests.Double.Distributions
         {
             var rng = new MultiThreadedRng();
             var samples = new double[1_000];
+            var dist = new FastRng.Double.Distributions.Normal();
             for (var n = 0; n < samples.Length; n++)
-                samples[n] = await rng.NextNumber(-1.0, 1.0, new FastRng.Double.Distributions.Normal());
+                samples[n] = await rng.NextNumber(-1.0, 1.0, dist);
             
             rng.StopProducer();
             Assert.That(samples.Min(), Is.GreaterThanOrEqualTo(-1.0), "Min is out of range");
@@ -58,8 +63,9 @@ namespace FastRngTests.Double.Distributions
         {
             var rng = new MultiThreadedRng();
             var samples = new double[1_000];
+            var dist = new FastRng.Double.Distributions.Normal();
             for (var n = 0; n < samples.Length; n++)
-                samples[n] = await rng.NextNumber(0.0, 1.0, new FastRng.Double.Distributions.Normal());
+                samples[n] = await rng.NextNumber(0.0, 1.0, dist);
             
             rng.StopProducer();
             Assert.That(samples.Min(), Is.GreaterThanOrEqualTo(0.0), "Min is out of range");

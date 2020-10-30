@@ -15,24 +15,33 @@ namespace FastRngTests.Double.Distributions
         [Category(TestCategories.NORMAL)]
         public async Task TestBetaDistribution01()
         {
-            const double A = 2.0;
-            const double B = 2.0;
-            const double MEAN = A / (A + B);
-            const double VARIANCE = (A * B) / ((A + B) * (A + B) * (A + B + 1.0));
-            
             var dist = new FastRng.Double.Distributions.BetaA2B2();
-            var stats = new RunningStatistics();
+            var fqa = new FrequencyAnalysis();
             var rng = new MultiThreadedRng();
             
             for (var n = 0; n < 100_000; n++)
-                stats.Push(await rng.NextNumber(dist));
+                fqa.CountThis(await rng.NextNumber(dist));
             
             rng.StopProducer();
-            TestContext.WriteLine($"mean={MEAN} vs. {stats.Mean}");
-            TestContext.WriteLine($"variance={VARIANCE} vs {stats.Variance}");
+            var result = fqa.NormalizeAndPlotEvents(TestContext.WriteLine);
             
-            Assert.That(stats.Mean, Is.EqualTo(MEAN).Within(0.1), "Mean is out of range");
-            Assert.That(stats.Variance, Is.EqualTo(VARIANCE).Within(0.01), "Variance is out of range");
+            Assert.That(result[0], Is.EqualTo(0.0396).Within(0.3));
+            Assert.That(result[1], Is.EqualTo(0.0784).Within(0.3));
+            Assert.That(result[2], Is.EqualTo(0.1164).Within(0.3));
+            
+            Assert.That(result[21], Is.EqualTo(0.6864).Within(0.3));
+            Assert.That(result[22], Is.EqualTo(0.7084).Within(0.3));
+            Assert.That(result[23], Is.EqualTo(0.7296).Within(0.3));
+            
+            Assert.That(result[50], Is.EqualTo(0.9996).Within(0.3));
+            
+            Assert.That(result[75], Is.EqualTo(0.7296).Within(0.3));
+            Assert.That(result[85], Is.EqualTo(0.4816).Within(0.3));
+            Assert.That(result[90], Is.EqualTo(0.3276).Within(0.3));
+            
+            Assert.That(result[97], Is.EqualTo(0.0784).Within(0.3));
+            Assert.That(result[98], Is.EqualTo(0.0396).Within(0.3));
+            Assert.That(result[99], Is.EqualTo(0.0000).Within(0.3));
         }
         
         [Test]
@@ -42,9 +51,10 @@ namespace FastRngTests.Double.Distributions
         {
             var rng = new MultiThreadedRng();
             var samples = new double[1_000];
+            var dist = new FastRng.Double.Distributions.BetaA2B2();
             for (var n = 0; n < samples.Length; n++)
-                samples[n] = await rng.NextNumber(-1.0, 1.0, new FastRng.Double.Distributions.BetaA2B2());
-            
+                samples[n] = await rng.NextNumber(-1.0, 1.0, dist);
+
             rng.StopProducer();
             Assert.That(samples.Min(), Is.GreaterThanOrEqualTo(-1.0), "Min out of range");
             Assert.That(samples.Max(), Is.LessThanOrEqualTo(1.0), "Max out of range");
@@ -57,8 +67,9 @@ namespace FastRngTests.Double.Distributions
         {
             var rng = new MultiThreadedRng();
             var samples = new double[1_000];
+            var dist = new FastRng.Double.Distributions.BetaA2B2();
             for (var n = 0; n < samples.Length; n++)
-                samples[n] = await rng.NextNumber(0.0, 1.0, new FastRng.Double.Distributions.BetaA2B2());
+                samples[n] = await rng.NextNumber(0.0, 1.0, dist);
             
             rng.StopProducer();
             Assert.That(samples.Min(), Is.GreaterThanOrEqualTo(0.0), "Min is out of range");

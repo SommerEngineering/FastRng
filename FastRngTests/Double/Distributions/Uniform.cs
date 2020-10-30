@@ -23,12 +23,19 @@ namespace FastRngTests.Double.Distributions
             const double VARIANCE = (1.0 / 12.0) * (B - A) * (B - A);
             
             var stats = new RunningStatistics();
+            var fra = new FrequencyAnalysis();
             var rng = new MultiThreadedRng();
             
             for (var n = 0; n < 100_000; n++)
-                stats.Push(await rng.GetUniform());
-            
+            {
+                var value = await rng.GetUniform();
+                stats.Push(value);
+                fra.CountThis(value);
+            }
+
             rng.StopProducer();
+            fra.NormalizeAndPlotEvents(TestContext.WriteLine);
+            fra.PlotOccurence(TestContext.WriteLine);
             TestContext.WriteLine($"mean={MEAN} vs. {stats.Mean}");
             TestContext.WriteLine($"variance={VARIANCE} vs {stats.Variance}");
             
@@ -113,8 +120,9 @@ namespace FastRngTests.Double.Distributions
         public async Task TestUniformGeneratorWithRange01()
         {
             var samples = new double[1_000];
+            var dist = new FastRng.Double.Distributions.Uniform();
             for (var n = 0; n < samples.Length; n++)
-                samples[n] = await rng.NextNumber(-1.0, 1.0, new FastRng.Double.Distributions.Uniform());
+                samples[n] = await rng.NextNumber(-1.0, 1.0, dist);
             
             rng.StopProducer();
             Assert.That(samples.Min(), Is.GreaterThanOrEqualTo(-1.0), "Min is out of range");
@@ -127,8 +135,9 @@ namespace FastRngTests.Double.Distributions
         public async Task TestUniformGeneratorWithRange02()
         {
             var samples = new double[1_000];
+            var dist = new FastRng.Double.Distributions.Uniform();
             for (var n = 0; n < samples.Length; n++)
-                samples[n] = await rng.NextNumber(0.0, 1.0, new FastRng.Double.Distributions.Uniform());
+                samples[n] = await rng.NextNumber(0.0, 1.0, dist);
             
             Assert.That(samples.Min(), Is.GreaterThanOrEqualTo(0.0), "Min is out of range");
             Assert.That(samples.Max(), Is.LessThanOrEqualTo(1.0), "Max is out of range");
