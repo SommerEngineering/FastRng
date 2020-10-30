@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 
 namespace FastRng.Double.Distributions
 {
-    public sealed class CauchyLorentz : IDistribution
+    public sealed class CauchyLorentzX0 : IDistribution
     {
         private const double CONSTANT = 0.31;
         private const double SCALE = 0.1;
@@ -19,7 +19,7 @@ namespace FastRng.Double.Distributions
             set
             {
                 this.random = value;
-                this.fitter = new ShapeFitter(CauchyLorentz.ShapeFunction, this.random, 50, 0.98);
+                this.fitter = new ShapeFitter(CauchyLorentzX0.ShapeFunction, this.random, 100);
             }
         }
 
