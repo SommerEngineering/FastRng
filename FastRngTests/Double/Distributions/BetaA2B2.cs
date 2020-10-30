@@ -8,7 +8,7 @@ using NUnit.Framework;
 namespace FastRngTests.Double.Distributions
 {
     [ExcludeFromCodeCoverage]
-    public class Beta
+    public class BetaA2B2
     {
         [Test]
         [Category(TestCategories.COVER)]
