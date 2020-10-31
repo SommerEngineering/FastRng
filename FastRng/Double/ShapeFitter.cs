@@ -43,9 +43,14 @@ namespace FastRng.Double
             while (!token.IsCancellationRequested)
             {
                 var x = await this.rng.GetUniform(token);
+                if (double.IsNaN(x))
+                    return x;
+                
                 var nextBucket = (int)Math.Floor(x * this.sampleSize);
                 var threshold = this.probabilities[nextBucket];
                 var y = await this.rng.NextNumber(0.0d, this.max, this.uniform, token);
+                if (double.IsNaN(y))
+                    return y;
                 
                 if(y > threshold)
                     continue;
