@@ -170,19 +170,19 @@ namespace FastRngTests.Double
             Assert.That(wasCanceled, Is.True, "The consumer was not canceled");
             
             var tokenSource2 = new CancellationTokenSource(TimeSpan.FromSeconds(3));
-            await rng.NextNumber(new Normal(), tokenSource2.Token);
+            await rng.NextNumber(new NormalS02M05(), tokenSource2.Token);
             Assert.That(tokenSource2.IsCancellationRequested, Is.True);
             
             tokenSource2 = new CancellationTokenSource(TimeSpan.FromSeconds(3));
-            await rng.NextNumber(-1d, 1d, new Normal(), tokenSource2.Token);
+            await rng.NextNumber(-1d, 1d, new NormalS02M05(), tokenSource2.Token);
             Assert.That(tokenSource2.IsCancellationRequested, Is.True);
             
             tokenSource2 = new CancellationTokenSource(TimeSpan.FromSeconds(3));
-            await rng.NextNumber(0u, 6u, new Normal(), tokenSource2.Token);
+            await rng.NextNumber(0u, 6u, new NormalS02M05(), tokenSource2.Token);
             Assert.That(tokenSource2.IsCancellationRequested, Is.True);
             
             tokenSource2 = new CancellationTokenSource(TimeSpan.FromSeconds(3));
-            await rng.NextNumber(0ul, 6ul, new Normal(), tokenSource2.Token);
+            await rng.NextNumber(0ul, 6ul, new NormalS02M05(), tokenSource2.Token);
             Assert.That(tokenSource2.IsCancellationRequested, Is.True);
         }
 

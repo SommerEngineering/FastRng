@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace FastRng.Double.Distributions
 {
-    public sealed class Normal : IDistribution
+    public sealed class NormalS02M05 : IDistribution
     {
         private const double SQRT_2_PI = 2.506628275;
         private const double STDDEV = 0.2;
@@ -14,7 +14,7 @@ namespace FastRng.Double.Distributions
         private ShapeFitter fitter;
         private IRandom random;
 
-        public Normal()
+        public NormalS02M05()
         {
         }
         
@@ -24,7 +24,7 @@ namespace FastRng.Double.Distributions
             set
             {
                 this.random = value;
-                this.fitter = new ShapeFitter(Normal.ShapeFunction, this.random, 100);
+                this.fitter = new ShapeFitter(NormalS02M05.ShapeFunction, this.random, 100);
             }
         }
         

@@ -8,7 +8,7 @@ using NUnit.Framework;
 namespace FastRngTests.Double.Distributions
 {
     [ExcludeFromCodeCoverage]
-    public class Normal
+    public class NormalS02M05
     {
         [Test]
         [Category(TestCategories.COVER)]
@@ -18,7 +18,7 @@ namespace FastRngTests.Double.Distributions
             const double MEAN = 0.5;
             const double STANDARD_DEVIATION = 0.2;
             
-            var dist = new FastRng.Double.Distributions.Normal();
+            var dist = new FastRng.Double.Distributions.NormalS02M05();
             var stats = new RunningStatistics();
             var fra = new FrequencyAnalysis();
             var rng = new MultiThreadedRng();
@@ -47,7 +47,7 @@ namespace FastRngTests.Double.Distributions
         {
             var rng = new MultiThreadedRng();
             var samples = new double[1_000];
-            var dist = new FastRng.Double.Distributions.Normal();
+            var dist = new FastRng.Double.Distributions.NormalS02M05();
             for (var n = 0; n < samples.Length; n++)
                 samples[n] = await rng.NextNumber(-1.0, 1.0, dist);
             
@@ -63,7 +63,7 @@ namespace FastRngTests.Double.Distributions
         {
             var rng = new MultiThreadedRng();
             var samples = new double[1_000];
-            var dist = new FastRng.Double.Distributions.Normal();
+            var dist = new FastRng.Double.Distributions.NormalS02M05();
             for (var n = 0; n < samples.Length; n++)
                 samples[n] = await rng.NextNumber(0.0, 1.0, dist);
             
@@ -78,7 +78,7 @@ namespace FastRngTests.Double.Distributions
         public async Task TestNormalGeneratorWithRange03()
         {
             var rng = new MultiThreadedRng();
-            var dist = new FastRng.Double.Distributions.Normal { Random = rng }; // Test default parameters
+            var dist = new FastRng.Double.Distributions.NormalS02M05 { Random = rng }; // Test default parameters
             
             var samples = new double[1_000];
             for (var n = 0; n < samples.Length; n++)
@@ -94,7 +94,7 @@ namespace FastRngTests.Double.Distributions
         [Category(TestCategories.NORMAL)]
         public async Task NoRandomNumberGenerator01()
         {
-            var dist = new FastRng.Double.Distributions.Normal();
+            var dist = new FastRng.Double.Distributions.NormalS02M05();
             Assert.DoesNotThrowAsync(async () => await dist.GetDistributedValue());
             Assert.That(await dist.GetDistributedValue(), Is.NaN);
         }
