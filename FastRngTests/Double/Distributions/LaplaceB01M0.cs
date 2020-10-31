@@ -8,30 +8,40 @@ using NUnit.Framework;
 namespace FastRngTests.Double.Distributions
 {
     [ExcludeFromCodeCoverage]
-    public class Laplace
+    public class LaplaceB01M0
     {
         [Test]
         [Category(TestCategories.COVER)]
         [Category(TestCategories.NORMAL)]
         public async Task TestLaplaceDistribution01()
         {
-            const double MEAN = 0.2;
-            const double SCALE = 4.8;
-            const double VARIANCE = 2 * SCALE * SCALE;
-            
-            var dist = new FastRng.Double.Distributions.Laplace{ Mean = MEAN, Scale = SCALE };
-            var stats = new RunningStatistics();
+            var dist = new FastRng.Double.Distributions.LaplaceB01M0();
+            var fra = new FrequencyAnalysis();
             var rng = new MultiThreadedRng();
             
             for (var n = 0; n < 100_000; n++)
-                stats.Push(await rng.NextNumber(dist));
+                fra.CountThis(await rng.NextNumber(dist));
             
             rng.StopProducer();
-            TestContext.WriteLine($"mean={MEAN} vs. {stats.Mean}");
-            TestContext.WriteLine($"variance={VARIANCE} vs {stats.Variance}");
+            var result = fra.NormalizeAndPlotEvents(TestContext.WriteLine);
+
+            Assert.That(result[0], Is.EqualTo(1.0000000000000000).Within(0.05));
+            Assert.That(result[1], Is.EqualTo(0.9048374180359590).Within(0.05));
+            Assert.That(result[2], Is.EqualTo(0.8187307530779810).Within(0.05));
             
-            Assert.That(stats.Mean, Is.EqualTo(MEAN).Within(0.1), "Mean is out of range");
-            Assert.That(stats.Variance, Is.EqualTo(VARIANCE).Within(0.5), "Variance is out of range");
+            Assert.That(result[21], Is.EqualTo(0.1224564282529820).Within(0.05));
+            Assert.That(result[22], Is.EqualTo(0.1108031583623340).Within(0.05));
+            Assert.That(result[23], Is.EqualTo(0.1002588437228040).Within(0.05));
+            
+            Assert.That(result[50], Is.EqualTo(0.0067379469990855).Within(0.002));
+            
+            Assert.That(result[75], Is.EqualTo(0.0005530843701478).Within(0.0004));
+            Assert.That(result[85], Is.EqualTo(0.0002034683690106).Within(0.0003));
+            Assert.That(result[90], Is.EqualTo(0.0001234098040867).Within(0.0003));
+            
+            Assert.That(result[97], Is.EqualTo(0.0000612834950532).Within(0.0002));
+            Assert.That(result[98], Is.EqualTo(0.0000554515994322).Within(0.0002));
+            Assert.That(result[99], Is.EqualTo(0.0000501746820562).Within(0.0002));
         }
         
         [Test]
@@ -40,9 +50,10 @@ namespace FastRngTests.Double.Distributions
         public async Task TestLaplaceGeneratorWithRange01()
         {
             var rng = new MultiThreadedRng();
+            var dist = new FastRng.Double.Distributions.LaplaceB01M0();
             var samples = new double[1_000];
             for (var n = 0; n < samples.Length; n++)
-                samples[n] = await rng.NextNumber(-1.0, 1.0, new FastRng.Double.Distributions.Laplace());
+                samples[n] = await rng.NextNumber(-1.0, 1.0, dist);
             
             rng.StopProducer();
             Assert.That(samples.Min(), Is.GreaterThanOrEqualTo(-1.0), "Min out of range");
@@ -55,9 +66,10 @@ namespace FastRngTests.Double.Distributions
         public async Task TestLaplaceGeneratorWithRange02()
         {
             var rng = new MultiThreadedRng();
+            var dist = new FastRng.Double.Distributions.LaplaceB01M0();
             var samples = new double[1_000];
             for (var n = 0; n < samples.Length; n++)
-                samples[n] = await rng.NextNumber(0.0, 1.0, new FastRng.Double.Distributions.Laplace());
+                samples[n] = await rng.NextNumber(0.0, 1.0, dist);
             
             rng.StopProducer();
             Assert.That(samples.Min(), Is.GreaterThanOrEqualTo(0.0), "Min is out of range");
@@ -70,7 +82,7 @@ namespace FastRngTests.Double.Distributions
         public async Task TestLaplaceGeneratorWithRange03()
         {
             var rng = new MultiThreadedRng();
-            var dist = new FastRng.Double.Distributions.Laplace { Random = rng }; // Test default parameters
+            var dist = new FastRng.Double.Distributions.LaplaceB01M0 { Random = rng }; // Test default parameters
             
             var samples = new double[1_000];
             for (var n = 0; n < samples.Length; n++)
@@ -84,25 +96,9 @@ namespace FastRngTests.Double.Distributions
         [Test]
         [Category(TestCategories.COVER)]
         [Category(TestCategories.NORMAL)]
-        public void ParameterTest01()
-        {
-            var dist = new FastRng.Double.Distributions.Laplace();
-            
-            Assert.DoesNotThrow(() => dist.Mean = -45);
-            Assert.DoesNotThrow(() => dist.Mean = 15);
-            Assert.DoesNotThrow(() => dist.Mean = 0);
-            
-            Assert.DoesNotThrow(() => dist.Scale = -45);
-            Assert.DoesNotThrow(() => dist.Scale = 15);
-            Assert.DoesNotThrow(() => dist.Scale = 0);
-        }
-
-        [Test]
-        [Category(TestCategories.COVER)]
-        [Category(TestCategories.NORMAL)]
         public async Task NoRandomNumberGenerator01()
         {
-            var dist = new FastRng.Double.Distributions.Laplace();
+            var dist = new FastRng.Double.Distributions.LaplaceB01M0();
             Assert.DoesNotThrowAsync(async () => await dist.GetDistributedValue());
             Assert.That(await dist.GetDistributedValue(), Is.NaN);
         }
