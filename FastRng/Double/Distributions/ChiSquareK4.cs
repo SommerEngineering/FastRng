@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 
 namespace FastRng.Double.Distributions
 {
-    public sealed class ChiSquareK4 : IDistribution
+    public sealed class ChiSquareK4 : Distribution
     {
         private const double K = 4.0;
         private const double K_HALF = K * 0.5d;
@@ -13,34 +13,13 @@ namespace FastRng.Double.Distributions
 
         private static readonly double DIVISOR;
         
-        private ShapeFitter fitter;
-        private IRandom random;
-
         static ChiSquareK4()
         {
             var twoToTheKHalf = Math.Pow(2, K_HALF);
             var gammaKHalf = MathTools.Gamma(K_HALF);
             DIVISOR = twoToTheKHalf * gammaKHalf;
         }
-        
-        public IRandom Random
-        {
-            get => this.random;
-            set
-            {
-                this.random = value;
-                this.fitter = new ShapeFitter(ChiSquareK4.ShapeFunction, this.random, 100);
-            }
-        }
-        
-        private static double ShapeFunction(double x) => CONSTANT * ((Math.Pow(x, K_HALF_MINUS_ONE) * Math.Exp(-x * 0.5d)) / DIVISOR);
 
-        public async ValueTask<double> GetDistributedValue(CancellationToken token = default)
-        {
-            if (this.Random == null)
-                return double.NaN;
-            
-            return await this.fitter.NextNumber(token);
-        }
+        protected override double ShapeFunction(double x) => CONSTANT * ((Math.Pow(x, K_HALF_MINUS_ONE) * Math.Exp(-x * 0.5d)) / DIVISOR);
     }
 }
