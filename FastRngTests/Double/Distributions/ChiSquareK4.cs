@@ -20,10 +20,7 @@ namespace FastRngTests.Double.Distributions
             var rng = new MultiThreadedRng();
             
             for (var n = 0; n < 100_000; n++)
-            {
-                var value = await rng.NextNumber(dist);
-                fqa.CountThis(value);
-            }
+                fqa.CountThis(await rng.NextNumber(dist));
 
             rng.StopProducer();
             
