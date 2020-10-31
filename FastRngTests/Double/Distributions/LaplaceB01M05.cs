@@ -25,23 +25,23 @@ namespace FastRngTests.Double.Distributions
             rng.StopProducer();
             var result = fra.NormalizeAndPlotEvents(TestContext.WriteLine);
 
-            Assert.That(result[0], Is.EqualTo(0.0074465830709244).Within(0.003));
-            Assert.That(result[1], Is.EqualTo(0.0082297470490200).Within(0.003));
-            Assert.That(result[2], Is.EqualTo(0.0090952771016958).Within(0.003));
+            Assert.That(result[0], Is.EqualTo(0.0074465830709244).Within(0.004));
+            Assert.That(result[1], Is.EqualTo(0.0082297470490200).Within(0.004));
+            Assert.That(result[2], Is.EqualTo(0.0090952771016958).Within(0.01));
             
-            Assert.That(result[21], Is.EqualTo(0.0608100626252180).Within(0.01));
-            Assert.That(result[22], Is.EqualTo(0.0672055127397498).Within(0.01));
-            Assert.That(result[23], Is.EqualTo(0.0742735782143340).Within(0.01));
+            Assert.That(result[21], Is.EqualTo(0.0608100626252180).Within(0.02));
+            Assert.That(result[22], Is.EqualTo(0.0672055127397498).Within(0.02));
+            Assert.That(result[23], Is.EqualTo(0.0742735782143340).Within(0.02));
             
             Assert.That(result[50], Is.EqualTo(1.0000000000000000).Within(0.2));
             
-            Assert.That(result[75], Is.EqualTo(0.0742735782143335).Within(0.008));
-            Assert.That(result[85], Is.EqualTo(0.0273237224472924).Within(0.005));
-            Assert.That(result[90], Is.EqualTo(0.0165726754017612).Within(0.003));
+            Assert.That(result[75], Is.EqualTo(0.0742735782143335).Within(0.01));
+            Assert.That(result[85], Is.EqualTo(0.0273237224472924).Within(0.01));
+            Assert.That(result[90], Is.EqualTo(0.0165726754017612).Within(0.01));
             
-            Assert.That(result[97], Is.EqualTo(0.0082297470490200).Within(0.0025));
-            Assert.That(result[98], Is.EqualTo(0.0074465830709243).Within(0.0025));
-            Assert.That(result[99], Is.EqualTo(0.0067379469990854).Within(0.0025));
+            Assert.That(result[97], Is.EqualTo(0.0082297470490200).Within(0.004));
+            Assert.That(result[98], Is.EqualTo(0.0074465830709243).Within(0.004));
+            Assert.That(result[99], Is.EqualTo(0.0067379469990854).Within(0.004));
         }
         
         [Test]

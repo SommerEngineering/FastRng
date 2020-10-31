@@ -30,22 +30,22 @@ namespace FastRngTests.Double.Distributions
             var result = fqa.NormalizeAndPlotEvents(TestContext.WriteLine);
 
             Assert.That(result[0], Is.EqualTo(1.00032041964207).Within(0.004));
-            Assert.That(result[1], Is.EqualTo(0.70380551227703).Within(0.02));
+            Assert.That(result[1], Is.EqualTo(0.70380551227703).Within(0.05));
             Assert.That(result[2], Is.EqualTo(0.571788691668126).Within(0.05));
             
             Assert.That(result[21], Is.EqualTo(0.192011337664754).Within(0.07));
             Assert.That(result[22], Is.EqualTo(0.186854182385981).Within(0.07));
             Assert.That(result[23], Is.EqualTo(0.182007652359976).Within(0.07));
             
-            Assert.That(result[50], Is.EqualTo(0.109088865614875).Within(0.02));
+            Assert.That(result[50], Is.EqualTo(0.109088865614875).Within(0.06));
             
-            Assert.That(result[75], Is.EqualTo(0.07886274821701).Within(0.01));
-            Assert.That(result[85], Is.EqualTo(0.070520397849883).Within(0.01));
-            Assert.That(result[90], Is.EqualTo(0.066863009640287).Within(0.01));
+            Assert.That(result[75], Is.EqualTo(0.07886274821701).Within(0.02));
+            Assert.That(result[85], Is.EqualTo(0.070520397849883).Within(0.02));
+            Assert.That(result[90], Is.EqualTo(0.066863009640287).Within(0.02));
             
-            Assert.That(result[97], Is.EqualTo(0.062214737436948).Within(0.01));
-            Assert.That(result[98], Is.EqualTo(0.061590997922187).Within(0.01));
-            Assert.That(result[99], Is.EqualTo(0.060976622578824).Within(0.01));
+            Assert.That(result[97], Is.EqualTo(0.062214737436948).Within(0.02));
+            Assert.That(result[98], Is.EqualTo(0.061590997922187).Within(0.02));
+            Assert.That(result[99], Is.EqualTo(0.060976622578824).Within(0.02));
         }
         
         [Test]

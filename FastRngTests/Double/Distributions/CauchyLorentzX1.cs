@@ -29,7 +29,7 @@ namespace FastRngTests.Double.Distributions
             var result = fqa.NormalizeAndPlotEvents(TestContext.WriteLine);
             
             Assert.That(result[0], Is.EqualTo(0.009966272570142).Within(0.003));
-            Assert.That(result[1], Is.EqualTo(0.010168596941156).Within(0.003));
+            Assert.That(result[1], Is.EqualTo(0.010168596941156).Within(0.004));
             Assert.That(result[2], Is.EqualTo(0.010377123221893).Within(0.005));
             
             Assert.That(result[21], Is.EqualTo(0.015956672819692).Within(0.005));
@@ -101,7 +101,7 @@ namespace FastRngTests.Double.Distributions
         [Category(TestCategories.NORMAL)]
         public async Task NoRandomNumberGenerator01()
         {
-            var dist = new FastRng.Double.Distributions.CauchyLorentzX0();
+            var dist = new FastRng.Double.Distributions.CauchyLorentzX1();
             Assert.DoesNotThrowAsync(async () => await dist.GetDistributedValue());
             Assert.That(await dist.GetDistributedValue(), Is.NaN);
         }

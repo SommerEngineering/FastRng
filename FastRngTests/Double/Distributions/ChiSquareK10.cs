@@ -29,9 +29,9 @@ namespace FastRngTests.Double.Distributions
             
             var result = fqa.NormalizeAndPlotEvents(TestContext.WriteLine);
 
-            Assert.That(result[0], Is.EqualTo(0.0000000164021588).Within(0.00000002));
-            Assert.That(result[1], Is.EqualTo(0.0000002611256437).Within(0.0000003));
-            Assert.That(result[2], Is.EqualTo(0.0000013153553250).Within(0.000002));
+            Assert.That(result[0], Is.EqualTo(0.0000000164021588).Within(0.0000002));
+            Assert.That(result[1], Is.EqualTo(0.0000002611256437).Within(0.000003));
+            Assert.That(result[2], Is.EqualTo(0.0000013153553250).Within(0.00002));
             
             Assert.That(result[21], Is.EqualTo(0.003459320622874).Within(0.005));
             Assert.That(result[22], Is.EqualTo(0.004111875573379).Within(0.005));

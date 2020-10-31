@@ -33,7 +33,7 @@ namespace FastRngTests.Double.Distributions
             Assert.That(result[22], Is.EqualTo(0.000452827182887).Within(0.00050));
             Assert.That(result[23], Is.EqualTo(0.000500451433441).Within(0.00051));
             
-            Assert.That(result[50], Is.EqualTo(0.007446583070924).Within(0.002));
+            Assert.That(result[50], Is.EqualTo(0.007446583070924).Within(0.003));
             
             Assert.That(result[75], Is.EqualTo(0.090717953289412).Within(0.02));
             Assert.That(result[85], Is.EqualTo(0.246596963941606).Within(0.05));
