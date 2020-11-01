@@ -10,7 +10,7 @@ namespace FastRng.Float
     /// <summary>
     /// This class uses the George Marsaglia's MWC algorithm. The algorithm's implementation based loosely on John D.
     /// Cook's (johndcook.com) implementation (https://www.codeproject.com/Articles/25172/Simple-Random-Number-Generation).
-    /// Thanks John for your work.
+    /// Thanks John for the inspiration.
     /// </summary>
     public sealed class MultiThreadedRng : IRandom
     {
