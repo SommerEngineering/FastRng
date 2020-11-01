@@ -47,6 +47,9 @@ namespace FastRng.Double
                     return x;
                 
                 var nextBucket = (int)Math.Floor(x * this.sampleSize);
+                if (nextBucket >= this.probabilities.Length)
+                    nextBucket = this.probabilities.Length - 1;
+                
                 var threshold = this.probabilities[nextBucket];
                 var y = await this.rng.NextNumber(0.0d, this.max, this.uniform, token);
                 if (double.IsNaN(y))

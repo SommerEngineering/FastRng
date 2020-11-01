@@ -46,6 +46,9 @@ namespace FastRng.Float
                     return x;
                 
                 var nextBucket = (int)MathF.Floor(x * this.sampleSize);
+                if (nextBucket >= this.probabilities.Length)
+                    nextBucket = this.probabilities.Length - 1;
+                
                 var threshold = this.probabilities[nextBucket];
                 var y = await this.rng.NextNumber(0.0f, this.max, this.uniform, token);
                 if (float.IsNaN(y))
