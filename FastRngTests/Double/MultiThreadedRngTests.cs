@@ -114,9 +114,14 @@ namespace FastRngTests.Double
         [Category(TestCategories.NORMAL)]
         public async Task TestRange04Uint()
         {
-            var dist = new Uniform(this.rng);
-            Assert.That(await dist.NextNumber(10, 1), Is.InRange(1, 10));
-            Assert.That(await dist.NextNumber(20, 1), Is.InRange(1, 20));
+            var distUniform = new Uniform(this.rng);
+            var distNormal = new NormalS02M05(this.rng);
+            
+            Assert.That(await distUniform.NextNumber(10, 1), Is.InRange(1, 10));
+            Assert.That(await distNormal.NextNumber(10, 1), Is.InRange(1, 10));
+            
+            Assert.That(await distUniform.NextNumber(20, 1), Is.InRange(1, 20));
+            Assert.That(await distNormal.NextNumber(20, 1), Is.InRange(1, 20));
         }
         
         [Test]
@@ -124,9 +129,14 @@ namespace FastRngTests.Double
         [Category(TestCategories.NORMAL)]
         public async Task TestRange04Ulong()
         {
-            var dist = new Uniform(this.rng);
-            Assert.That(await dist.NextNumber(10UL, 1), Is.InRange(1, 10));
-            Assert.That(await dist.NextNumber(20UL, 1), Is.InRange(1, 20));
+            var distUniform = new Uniform(this.rng);
+            var distNormal = new NormalS02M05(this.rng);
+            
+            Assert.That(await distUniform.NextNumber(10UL, 1), Is.InRange(1, 10));
+            Assert.That(await distNormal.NextNumber(10UL, 1), Is.InRange(1, 10));
+            
+            Assert.That(await distUniform.NextNumber(20UL, 1), Is.InRange(1, 20));
+            Assert.That(await distNormal.NextNumber(20UL, 1), Is.InRange(1, 20));
         }
         
         [Test]
@@ -134,9 +144,14 @@ namespace FastRngTests.Double
         [Category(TestCategories.NORMAL)]
         public async Task TestRange04Float()
         {
-            var dist = new Uniform(this.rng);
-            Assert.That(await dist.NextNumber(10.0, 1), Is.InRange(1, 10));
-            Assert.That(await dist.NextNumber(20.0, 1), Is.InRange(1, 20));
+            var distUniform = new Uniform(this.rng);
+            var distNormal = new NormalS02M05(this.rng);
+            
+            Assert.That(await distUniform.NextNumber(10.0, 1), Is.InRange(1, 10));
+            Assert.That(await distNormal.NextNumber(10.0, 1), Is.InRange(1, 10));
+            
+            Assert.That(await distUniform.NextNumber(20.0, 1), Is.InRange(1, 20));
+            Assert.That(await distNormal.NextNumber(20.0, 1), Is.InRange(1, 20));
         }
 
         [Test]
