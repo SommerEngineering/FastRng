@@ -3,13 +3,13 @@ using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Threading;
 using System.Threading.Tasks;
-using FastRng.Float;
-using FastRng.Float.Distributions;
+using FastRng.Double;
+using FastRng.Double.Distributions;
 using MathNet.Numerics.Distributions;
 using MathNet.Numerics.Random;
 using NUnit.Framework;
 
-namespace FastRngTests.Float
+namespace FastRngTests.Double
 {
     [ExcludeFromCodeCoverage]
     public class PerformanceTests
@@ -21,7 +21,7 @@ namespace FastRngTests.Float
         public async Task Generate1MUniform()
         {
             using var rng = new MultiThreadedRng();
-            var data = new float[1_000_000];
+            var data = new double[1_000_000];
             var stopwatch = new Stopwatch();
             Thread.Sleep(TimeSpan.FromSeconds(10)); // Warm-up phase of generator
             
@@ -40,7 +40,7 @@ namespace FastRngTests.Float
         {
             using var rng = new MultiThreadedRng();
             var dist = new NormalS02M05();
-            var data = new float[1_000_000];
+            var data = new double[1_000_000];
             var stopwatch = new Stopwatch();
             Thread.Sleep(TimeSpan.FromSeconds(10)); // Warm-up phase of generator
             
@@ -59,8 +59,8 @@ namespace FastRngTests.Float
         public async Task Generate1MChiSquare()
         {
             using var rng = new MultiThreadedRng();
-            var dist = new ChiSquareK4(); // TODO: Check the impact, when the rng gets set on ctor
-            var data = new float[1_000_000];
+            var dist = new ChiSquareK4();
+            var data = new double[1_000_000];
             var stopwatch = new Stopwatch();
             Thread.Sleep(TimeSpan.FromSeconds(10)); // Warm-up phase of generator
             
