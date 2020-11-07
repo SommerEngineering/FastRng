@@ -1,9 +1,11 @@
 using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Text;
 
 namespace FastRngTests.Float
 {
+    [ExcludeFromCodeCoverage]
     public sealed class FrequencyAnalysis
     {
         private readonly uint[] data;

@@ -1,10 +1,12 @@
 using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
 
 namespace FastRngTests.Double
 {
+    [ExcludeFromCodeCoverage]
     public sealed class FrequencyAnalysis
     {
         private readonly uint[] data;

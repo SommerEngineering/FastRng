@@ -1,7 +1,9 @@
 using System;
+using System.Diagnostics.CodeAnalysis;
 
 namespace FastRngTests.Double
 {
+    [ExcludeFromCodeCoverage]
     internal sealed class RunningStatistics
     {
         private double previousM;

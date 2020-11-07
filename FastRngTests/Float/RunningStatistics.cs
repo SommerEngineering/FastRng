@@ -1,7 +1,9 @@
 using System;
+using System.Diagnostics.CodeAnalysis;
 
 namespace FastRngTests.Float
 {
+    [ExcludeFromCodeCoverage]
     internal sealed class RunningStatistics
     {
         private float previousM;
