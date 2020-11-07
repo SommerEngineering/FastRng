@@ -285,5 +285,13 @@ namespace FastRngTests.Double.Distributions
             
             Assert.That(distribution[..^1].Max() - distribution[..^1].Min(), Is.InRange(0, 6_000));
         }
+        
+        [Test]
+        [Category(TestCategories.COVER)]
+        [Category(TestCategories.NORMAL)]
+        public void NoRandomNumberGenerator01()
+        {
+            Assert.Throws<ArgumentNullException>(() => new FastRng.Double.Distributions.Uniform(null));
+        }
     }
 }
