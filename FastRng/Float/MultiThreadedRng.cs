@@ -298,52 +298,8 @@ namespace FastRng.Float
             //
             return float.NaN;
         }
-
-        public async ValueTask<uint> NextNumber(uint rangeStart, uint rangeEnd, IDistribution distribution, CancellationToken cancel = default)
-        {
-            if (rangeStart > rangeEnd)
-            {
-                var tmp = rangeStart;
-                rangeStart = rangeEnd;
-                rangeEnd = tmp;
-            }
-            
-            var range = rangeEnd - rangeStart;
-            var distributedValue = await distribution.GetDistributedValue(cancel);
-            return (uint) ((distributedValue * range) + rangeStart);
-        }
-
-        public async ValueTask<ulong> NextNumber(ulong rangeStart, ulong rangeEnd, IDistribution distribution, CancellationToken cancel = default(CancellationToken))
-        {
-            if (rangeStart > rangeEnd)
-            {
-                var tmp = rangeStart;
-                rangeStart = rangeEnd;
-                rangeEnd = tmp;
-            }
-            
-            var range = rangeEnd - rangeStart;
-            var distributedValue = await distribution.GetDistributedValue(cancel);
-            return (ulong) ((distributedValue * range) + rangeStart);
-        }
-
-        public async ValueTask<float> NextNumber(float rangeStart, float rangeEnd, IDistribution distribution, CancellationToken cancel = default(CancellationToken))
-        {
-            if (rangeStart > rangeEnd)
-            {
-                var tmp = rangeStart;
-                rangeStart = rangeEnd;
-                rangeEnd = tmp;
-            }
-            
-            var range = rangeEnd - rangeStart;
-            var distributedValue = await distribution.GetDistributedValue(cancel);
-            return (distributedValue * range) + rangeStart;
-        }
-
-        public async ValueTask<float> NextNumber(IDistribution distribution, CancellationToken cancel = default) => await this.NextNumber(0.0f, 1.0f, distribution, cancel);
-
-        public void StopProducer() => this.producerTokenSource.Cancel();
+        
+        private void StopProducer() => this.producerTokenSource.Cancel();
 
         public void Dispose() => this.StopProducer();
 

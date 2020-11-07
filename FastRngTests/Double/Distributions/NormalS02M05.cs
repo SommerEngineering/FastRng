@@ -25,7 +25,7 @@ namespace FastRngTests.Double.Distributions
 
             for (var n = 0; n < 100_000; n++)
             {
-                var nextNumber = await rng.NextNumber(dist);
+                var nextNumber = await dist.NextNumber();
                 stats.Push(nextNumber);
                 fra.CountThis(nextNumber);
             }
@@ -48,7 +48,7 @@ namespace FastRngTests.Double.Distributions
             var samples = new double[1_000];
             var dist = new FastRng.Double.Distributions.NormalS02M05(rng);
             for (var n = 0; n < samples.Length; n++)
-                samples[n] = await rng.NextNumber(-1.0, 1.0, dist);
+                samples[n] = await dist.NextNumber(-1.0, 1.0);
             
             Assert.That(samples.Min(), Is.GreaterThanOrEqualTo(-1.0), "Min is out of range");
             Assert.That(samples.Max(), Is.LessThanOrEqualTo(1.0), "Max is out of range");
@@ -63,7 +63,7 @@ namespace FastRngTests.Double.Distributions
             var samples = new double[1_000];
             var dist = new FastRng.Double.Distributions.NormalS02M05(rng);
             for (var n = 0; n < samples.Length; n++)
-                samples[n] = await rng.NextNumber(0.0, 1.0, dist);
+                samples[n] = await dist.NextNumber(0.0, 1.0);
             
             Assert.That(samples.Min(), Is.GreaterThanOrEqualTo(0.0), "Min is out of range");
             Assert.That(samples.Max(), Is.LessThanOrEqualTo(1.0), "Max is out of range");

@@ -52,7 +52,7 @@ namespace FastRng.Double
                     nextBucket = this.probabilities.Length - 1;
                 
                 var threshold = this.probabilities[nextBucket];
-                var y = await this.rng.NextNumber(0.0d, this.max, this.uniform, token);
+                var y = await this.uniform.NextNumber(0.0d, this.max, token);
                 if (double.IsNaN(y))
                     return y;
                 

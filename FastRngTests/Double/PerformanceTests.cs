@@ -46,7 +46,7 @@ namespace FastRngTests.Double
             
             stopwatch.Start();
             for (uint n = 0; n < data.Length; n++)
-                data[n] = await rng.NextNumber(dist);
+                data[n] = await dist.NextNumber();
             
             stopwatch.Stop();
             
@@ -65,7 +65,7 @@ namespace FastRngTests.Double
             
             stopwatch.Start();
             for (uint n = 0; n < data.Length; n++)
-                data[n] = await rng.NextNumber(dist);
+                data[n] = await dist.NextNumber();
             
             stopwatch.Stop();
 

@@ -21,5 +21,49 @@ namespace FastRng.Float.Distributions
         protected abstract float ShapeFunction(float x);
         
         public async ValueTask<float> GetDistributedValue(CancellationToken token = default) => await this.fitter.NextNumber(token);
+        
+        public async ValueTask<uint> NextNumber(uint rangeStart, uint rangeEnd, CancellationToken cancel = default)
+        {
+            if (rangeStart > rangeEnd)
+            {
+                var tmp = rangeStart;
+                rangeStart = rangeEnd;
+                rangeEnd = tmp;
+            }
+            
+            var range = rangeEnd - rangeStart;
+            var distributedValue = await this.GetDistributedValue(cancel);
+            return (uint) ((distributedValue * range) + rangeStart);
+        }
+
+        public async ValueTask<ulong> NextNumber(ulong rangeStart, ulong rangeEnd, CancellationToken cancel = default(CancellationToken))
+        {
+            if (rangeStart > rangeEnd)
+            {
+                var tmp = rangeStart;
+                rangeStart = rangeEnd;
+                rangeEnd = tmp;
+            }
+            
+            var range = rangeEnd - rangeStart;
+            var distributedValue = await this.GetDistributedValue(cancel);
+            return (ulong) ((distributedValue * range) + rangeStart);
+        }
+
+        public async ValueTask<float> NextNumber(float rangeStart, float rangeEnd, CancellationToken cancel = default(CancellationToken))
+        {
+            if (rangeStart > rangeEnd)
+            {
+                var tmp = rangeStart;
+                rangeStart = rangeEnd;
+                rangeEnd = tmp;
+            }
+            
+            var range = rangeEnd - rangeStart;
+            var distributedValue = await this.GetDistributedValue(cancel);
+            return (distributedValue * range) + rangeStart;
+        }
+
+        public async ValueTask<float> NextNumber(CancellationToken cancel = default) => await this.NextNumber(0.0f, 1.0f, cancel);
     }
 }

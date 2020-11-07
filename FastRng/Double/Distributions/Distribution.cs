@@ -21,5 +21,49 @@ namespace FastRng.Double.Distributions
         protected abstract double ShapeFunction(double x);
         
         public async ValueTask<double> GetDistributedValue(CancellationToken token = default) => await this.fitter.NextNumber(token);
+        
+        public async ValueTask<uint> NextNumber(uint rangeStart, uint rangeEnd, CancellationToken cancel = default)
+        {
+            if (rangeStart > rangeEnd)
+            {
+                var tmp = rangeStart;
+                rangeStart = rangeEnd;
+                rangeEnd = tmp;
+            }
+            
+            var range = rangeEnd - rangeStart;
+            var distributedValue = await this.GetDistributedValue(cancel);
+            return (uint) ((distributedValue * range) + rangeStart);
+        }
+
+        public async ValueTask<ulong> NextNumber(ulong rangeStart, ulong rangeEnd, CancellationToken cancel = default(CancellationToken))
+        {
+            if (rangeStart > rangeEnd)
+            {
+                var tmp = rangeStart;
+                rangeStart = rangeEnd;
+                rangeEnd = tmp;
+            }
+            
+            var range = rangeEnd - rangeStart;
+            var distributedValue = await this.GetDistributedValue(cancel);
+            return (ulong) ((distributedValue * range) + rangeStart);
+        }
+
+        public async ValueTask<double> NextNumber(double rangeStart, double rangeEnd, CancellationToken cancel = default(CancellationToken))
+        {
+            if (rangeStart > rangeEnd)
+            {
+                var tmp = rangeStart;
+                rangeStart = rangeEnd;
+                rangeEnd = tmp;
+            }
+            
+            var range = rangeEnd - rangeStart;
+            var distributedValue = await this.GetDistributedValue(cancel);
+            return (distributedValue * range) + rangeStart;
+        }
+
+        public async ValueTask<double> NextNumber(CancellationToken cancel = default) => await this.NextNumber(0.0, 1.0, cancel);
     }
 }

@@ -20,7 +20,7 @@ namespace FastRngTests.Float.Distributions
             var fra = new FrequencyAnalysis();
 
             for (var n = 0; n < 100_000; n++)
-                fra.CountThis(await rng.NextNumber(dist));
+                fra.CountThis(await dist.NextNumber());
             
             var result = fra.NormalizeAndPlotEvents(TestContext.WriteLine);
 
@@ -52,7 +52,7 @@ namespace FastRngTests.Float.Distributions
             var dist = new FastRng.Float.Distributions.StudentTNu1(rng);
             var samples = new float[1_000];
             for (var n = 0; n < samples.Length; n++)
-                samples[n] = await rng.NextNumber(-1.0f, 1.0f, dist);
+                samples[n] = await dist.NextNumber(-1.0f, 1.0f);
             
             Assert.That(samples.Min(), Is.GreaterThanOrEqualTo(-1.0f), "Min out of range");
             Assert.That(samples.Max(), Is.LessThanOrEqualTo(1.0f), "Max out of range");
@@ -67,7 +67,7 @@ namespace FastRngTests.Float.Distributions
             var dist = new FastRng.Float.Distributions.StudentTNu1(rng);
             var samples = new float[1_000];
             for (var n = 0; n < samples.Length; n++)
-                samples[n] = await rng.NextNumber(0.0f, 1.0f, dist);
+                samples[n] = await dist.NextNumber(0.0f, 1.0f);
             
             Assert.That(samples.Min(), Is.GreaterThanOrEqualTo(0.0f), "Min is out of range");
             Assert.That(samples.Max(), Is.LessThanOrEqualTo(1.0f), "Max is out of range");

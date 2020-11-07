@@ -51,7 +51,7 @@ namespace FastRng.Float
                     nextBucket = this.probabilities.Length - 1;
                 
                 var threshold = this.probabilities[nextBucket];
-                var y = await this.rng.NextNumber(0.0f, this.max, this.uniform, token);
+                var y = await this.uniform.NextNumber(0.0f, this.max, token);
                 if (float.IsNaN(y))
                     return y;
                 

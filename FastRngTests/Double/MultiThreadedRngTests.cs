@@ -20,7 +20,7 @@ namespace FastRngTests.Double
         {
             var dist = new Uniform(this.rng);
             for (uint n = 0; n < 1_000_000; n++)
-                Assert.That(await rng.NextNumber(n, 100_000 + n, dist), Is.InRange(n, 100_000 + n));
+                Assert.That(await dist.NextNumber(n, 100_000 + n), Is.InRange(n, 100_000 + n));
         }
         
         [Test]
@@ -30,7 +30,7 @@ namespace FastRngTests.Double
         {
             var dist = new Uniform(this.rng);
             for (ulong n = 0; n < 1_000_000; n++)
-                Assert.That(await rng.NextNumber(n, 100_000 + n, dist), Is.InRange(n, 100_000 + n));
+                Assert.That(await dist.NextNumber(n, 100_000 + n), Is.InRange(n, 100_000 + n));
         }
         
         [Test]
@@ -40,7 +40,7 @@ namespace FastRngTests.Double
         {
             var dist = new Uniform(this.rng);
             for (var n = 0.0; n < 1e6; n++)
-                Assert.That(await rng.NextNumber(n, 100_000 + n, dist), Is.InRange(n, 100_000 + n));
+                Assert.That(await dist.NextNumber(n, 100_000 + n), Is.InRange(n, 100_000 + n));
         }
         
         [Test]
@@ -49,9 +49,9 @@ namespace FastRngTests.Double
         public async Task TestRange02Uint()
         {
             var dist = new Uniform(this.rng);
-            Assert.That(await rng.NextNumber(5, 5, dist), Is.EqualTo(5));
-            Assert.That(await rng.NextNumber(0, 0, dist), Is.EqualTo(0));
-            Assert.That(await rng.NextNumber(3_000_000_000, 3_000_000_000, dist), Is.EqualTo(3_000_000_000));
+            Assert.That(await dist.NextNumber(5, 5), Is.EqualTo(5));
+            Assert.That(await dist.NextNumber(0, 0), Is.EqualTo(0));
+            Assert.That(await dist.NextNumber(3_000_000_000, 3_000_000_000), Is.EqualTo(3_000_000_000));
         }
         
         [Test]
@@ -60,9 +60,9 @@ namespace FastRngTests.Double
         public async Task TestRange02Ulong()
         {
             var dist = new Uniform(this.rng);
-            Assert.That(await rng.NextNumber(5UL, 5, dist), Is.EqualTo(5));
-            Assert.That(await rng.NextNumber(0UL, 0, dist), Is.EqualTo(0));
-            Assert.That(await rng.NextNumber(3_000_000_000UL, 3_000_000_000, dist), Is.EqualTo(3_000_000_000));
+            Assert.That(await dist.NextNumber(5UL, 5), Is.EqualTo(5));
+            Assert.That(await dist.NextNumber(0UL, 0), Is.EqualTo(0));
+            Assert.That(await dist.NextNumber(3_000_000_000UL, 3_000_000_000), Is.EqualTo(3_000_000_000));
         }
         
         [Test]
@@ -71,9 +71,9 @@ namespace FastRngTests.Double
         public async Task TestRange02Float()
         {
             var dist = new Uniform(this.rng);
-            Assert.That(await rng.NextNumber(5f, 5f, dist), Is.EqualTo(5));
-            Assert.That(await rng.NextNumber(0f, 0f, dist), Is.EqualTo(0));
-            Assert.That(await rng.NextNumber(3e9, 3e9, dist), Is.EqualTo(3e9));
+            Assert.That(await dist.NextNumber(5f, 5f), Is.EqualTo(5));
+            Assert.That(await dist.NextNumber(0f, 0f), Is.EqualTo(0));
+            Assert.That(await dist.NextNumber(3e9, 3e9), Is.EqualTo(3e9));
         }
         
         [Test]
@@ -82,9 +82,9 @@ namespace FastRngTests.Double
         public async Task TestRange03Uint()
         {
             var dist = new Uniform(this.rng);
-            Assert.That(await rng.NextNumber(5, 6, dist), Is.InRange(5, 6));
-            Assert.That(await rng.NextNumber(0, 1, dist), Is.InRange(0, 1));
-            Assert.That(await rng.NextNumber(3_000_000_000, 3_000_000_002, dist), Is.InRange(3_000_000_000, 3_000_000_002));
+            Assert.That(await dist.NextNumber(5, 6), Is.InRange(5, 6));
+            Assert.That(await dist.NextNumber(0, 1), Is.InRange(0, 1));
+            Assert.That(await dist.NextNumber(3_000_000_000, 3_000_000_002), Is.InRange(3_000_000_000, 3_000_000_002));
         }
         
         [Test]
@@ -93,9 +93,9 @@ namespace FastRngTests.Double
         public async Task TestRange03Ulong()
         {
             var dist = new Uniform(this.rng);
-            Assert.That(await rng.NextNumber(5UL, 6, dist), Is.InRange(5, 6));
-            Assert.That(await rng.NextNumber(0UL, 1, dist), Is.InRange(0, 1));
-            Assert.That(await rng.NextNumber(3_000_000_000UL, 3_000_000_002, dist), Is.InRange(3_000_000_000, 3_000_000_002));
+            Assert.That(await dist.NextNumber(5UL, 6), Is.InRange(5, 6));
+            Assert.That(await dist.NextNumber(0UL, 1), Is.InRange(0, 1));
+            Assert.That(await dist.NextNumber(3_000_000_000UL, 3_000_000_002), Is.InRange(3_000_000_000, 3_000_000_002));
         }
         
         [Test]
@@ -104,9 +104,9 @@ namespace FastRngTests.Double
         public async Task TestRange03Float()
         {
             var dist = new Uniform(this.rng);
-            Assert.That(await rng.NextNumber(5f, 6, dist), Is.InRange(5, 6));
-            Assert.That(await rng.NextNumber(0f, 1, dist), Is.InRange(0, 1));
-            Assert.That(await rng.NextNumber(3e9, 3e9+2, dist), Is.InRange(3e9, 3e9+2));
+            Assert.That(await dist.NextNumber(5f, 6), Is.InRange(5, 6));
+            Assert.That(await dist.NextNumber(0f, 1), Is.InRange(0, 1));
+            Assert.That(await dist.NextNumber(3e9, 3e9+2), Is.InRange(3e9, 3e9+2));
         }
         
         [Test]
@@ -115,8 +115,8 @@ namespace FastRngTests.Double
         public async Task TestRange04Uint()
         {
             var dist = new Uniform(this.rng);
-            Assert.That(await rng.NextNumber(10, 1, dist), Is.InRange(1, 10));
-            Assert.That(await rng.NextNumber(20, 1, dist), Is.InRange(1, 20));
+            Assert.That(await dist.NextNumber(10, 1), Is.InRange(1, 10));
+            Assert.That(await dist.NextNumber(20, 1), Is.InRange(1, 20));
         }
         
         [Test]
@@ -125,8 +125,8 @@ namespace FastRngTests.Double
         public async Task TestRange04Ulong()
         {
             var dist = new Uniform(this.rng);
-            Assert.That(await rng.NextNumber(10UL, 1, dist), Is.InRange(1, 10));
-            Assert.That(await rng.NextNumber(20UL, 1, dist), Is.InRange(1, 20));
+            Assert.That(await dist.NextNumber(10UL, 1), Is.InRange(1, 10));
+            Assert.That(await dist.NextNumber(20UL, 1), Is.InRange(1, 20));
         }
         
         [Test]
@@ -135,8 +135,8 @@ namespace FastRngTests.Double
         public async Task TestRange04Float()
         {
             var dist = new Uniform(this.rng);
-            Assert.That(await rng.NextNumber(10.0, 1, dist), Is.InRange(1, 10));
-            Assert.That(await rng.NextNumber(20.0, 1, dist), Is.InRange(1, 20));
+            Assert.That(await dist.NextNumber(10.0, 1), Is.InRange(1, 10));
+            Assert.That(await dist.NextNumber(20.0, 1), Is.InRange(1, 20));
         }
 
         [Test]
@@ -144,8 +144,8 @@ namespace FastRngTests.Double
         [Category(TestCategories.NORMAL)]
         public async Task TestStoppingProducers01()
         {
-            using var rng2 = new MultiThreadedRng();
-            rng2.StopProducer();
+            var rng2 = new MultiThreadedRng();
+            rng2.Dispose();
 
             var masterToken = new CancellationTokenSource(TimeSpan.FromSeconds(16)).Token;
             var wasCanceled = false;
@@ -170,19 +170,19 @@ namespace FastRngTests.Double
             Assert.That(wasCanceled, Is.True, "The consumer was not canceled");
             
             var tokenSource2 = new CancellationTokenSource(TimeSpan.FromSeconds(3));
-            await rng2.NextNumber(new NormalS02M05(rng2), tokenSource2.Token);
+            await new NormalS02M05(rng2).NextNumber(tokenSource2.Token);
             Assert.That(tokenSource2.IsCancellationRequested, Is.True);
             
             tokenSource2 = new CancellationTokenSource(TimeSpan.FromSeconds(3));
-            await rng2.NextNumber(-1d, 1d, new NormalS02M05(rng2), tokenSource2.Token);
+            await new NormalS02M05(rng2).NextNumber(-1d, 1d, tokenSource2.Token);
             Assert.That(tokenSource2.IsCancellationRequested, Is.True);
             
             tokenSource2 = new CancellationTokenSource(TimeSpan.FromSeconds(3));
-            await rng2.NextNumber(0u, 6u, new NormalS02M05(rng2), tokenSource2.Token);
+            await new NormalS02M05(rng2).NextNumber(0u, 6u, tokenSource2.Token);
             Assert.That(tokenSource2.IsCancellationRequested, Is.True);
             
             tokenSource2 = new CancellationTokenSource(TimeSpan.FromSeconds(3));
-            await rng2.NextNumber(0ul, 6ul, new NormalS02M05(rng2), tokenSource2.Token);
+            await new NormalS02M05(rng2).NextNumber(0ul, 6ul, tokenSource2.Token);
             Assert.That(tokenSource2.IsCancellationRequested, Is.True);
         }
 
@@ -283,7 +283,7 @@ namespace FastRngTests.Double
             
             using var rng2 = new MultiThreadedRng();
             var dist = new Uniform(rng2);
-            Assert.That(await rng2.NextNumber(1, 100_000, dist, token), Is.EqualTo(0));
+            Assert.That(await dist.NextNumber(1, 100_000, token), Is.EqualTo(0));
         }
         
         [Test]

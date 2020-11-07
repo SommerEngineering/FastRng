@@ -46,11 +46,10 @@ namespace FastRngTests.Float
             
             stopwatch.Start();
             for (uint n = 0; n < data.Length; n++)
-                data[n] = await rng.NextNumber(dist);
+                data[n] = await dist.NextNumber();
             
             stopwatch.Stop();
-            rng.StopProducer();
-            
+
             TestContext.WriteLine($"Generated 1M normal distributed random numbers in {stopwatch.Elapsed.Minutes} minute(s), {stopwatch.Elapsed.Seconds} second(s), and {stopwatch.Elapsed.Milliseconds} milliseconds.");
         }
         
@@ -66,7 +65,7 @@ namespace FastRngTests.Float
             
             stopwatch.Start();
             for (uint n = 0; n < data.Length; n++)
-                data[n] = await rng.NextNumber(dist);
+                data[n] = await dist.NextNumber();
             
             stopwatch.Stop();
 

@@ -119,7 +119,7 @@ namespace FastRngTests.Double.Distributions
             using var rng = new MultiThreadedRng(); 
             var dist = new FastRng.Double.Distributions.Uniform(rng);
             for (var n = 0; n < samples.Length; n++)
-                samples[n] = await rng.NextNumber(-1.0, 1.0, dist);
+                samples[n] = await dist.NextNumber(-1.0, 1.0);
             
             Assert.That(samples.Min(), Is.GreaterThanOrEqualTo(-1.0), "Min is out of range");
             Assert.That(samples.Max(), Is.LessThanOrEqualTo(1.0), "Max is out of range");
@@ -134,7 +134,7 @@ namespace FastRngTests.Double.Distributions
             using var rng = new MultiThreadedRng();
             var dist = new FastRng.Double.Distributions.Uniform(rng);
             for (var n = 0; n < samples.Length; n++)
-                samples[n] = await rng.NextNumber(0.0, 1.0, dist);
+                samples[n] = await dist.NextNumber(0.0, 1.0);
             
             Assert.That(samples.Min(), Is.GreaterThanOrEqualTo(0.0), "Min is out of range");
             Assert.That(samples.Max(), Is.LessThanOrEqualTo(1.0), "Max is out of range");
@@ -164,7 +164,7 @@ namespace FastRngTests.Double.Distributions
             var distribution = new uint[101];
             var runs = 1_000_000;
             for (var n = 0; n < runs; n++)
-                distribution[await rng.NextNumber(0, 100, dist)]++;
+                distribution[await dist.NextNumber(0, 100)]++;
             
             for (var n = 0; n < distribution.Length - 1; n++)
                 Assert.That(distribution[n], Is.GreaterThan(0));
@@ -180,7 +180,7 @@ namespace FastRngTests.Double.Distributions
             var distribution = new uint[101];
             var runs = 1_000_000;
             for (var n = 0; n < runs; n++)
-                distribution[await rng.NextNumber(0UL, 100, dist)]++;
+                distribution[await dist.NextNumber(0UL, 100)]++;
             
             for (var n = 0; n < distribution.Length - 1; n++)
                 Assert.That(distribution[n], Is.GreaterThan(0));
@@ -196,7 +196,7 @@ namespace FastRngTests.Double.Distributions
             var distribution = new uint[101];
             var runs = 1_000_000;
             for (var n = 0; n < runs; n++)
-                distribution[(uint)Math.Floor(await rng.NextNumber(0.0, 100.0, dist))]++;
+                distribution[(uint)Math.Floor(await dist.NextNumber(0.0, 100.0))]++;
             
             for (var n = 0; n < distribution.Length - 1; n++)
                 Assert.That(distribution[n], Is.GreaterThan(0));
@@ -211,7 +211,7 @@ namespace FastRngTests.Double.Distributions
             var distribution = new uint[101];
             var runs = 1_000_000;
             for (var n = 0; n < runs; n++)
-                distribution[await rng.NextNumber(0, 100, dist)]++;
+                distribution[await dist.NextNumber(0, 100)]++;
             
             Assert.That(distribution[..^1].Max() - distribution[..^1].Min(), Is.InRange(0, 600));
         }
@@ -225,7 +225,7 @@ namespace FastRngTests.Double.Distributions
             var distribution = new uint[101];
             var runs = 1_000_000;
             for (var n = 0; n < runs; n++)
-                distribution[await rng.NextNumber(0UL, 100, dist)]++;
+                distribution[await dist.NextNumber(0UL, 100)]++;
             
             Assert.That(distribution[..^1].Max() - distribution[..^1].Min(), Is.InRange(0, 600));
         }
@@ -239,7 +239,7 @@ namespace FastRngTests.Double.Distributions
             var distribution = new uint[101];
             var runs = 1_000_000;
             for (var n = 0; n < runs; n++)
-                distribution[(uint)Math.Floor(await rng.NextNumber(0.0, 100.0, dist))]++;
+                distribution[(uint)Math.Floor(await dist.NextNumber(0.0, 100.0))]++;
             
             Assert.That(distribution[..^1].Max() - distribution[..^1].Min(), Is.InRange(0, 600));
         }
@@ -253,7 +253,7 @@ namespace FastRngTests.Double.Distributions
             var distribution = new uint[101];
             var runs = 100_000_000;
             for (var n = 0; n < runs; n++)
-                distribution[await rng.NextNumber(0, 100, dist)]++;
+                distribution[await dist.NextNumber(0, 100)]++;
             
             Assert.That(distribution[..^1].Max() - distribution[..^1].Min(), Is.InRange(0, 6_000));
         }
@@ -267,7 +267,7 @@ namespace FastRngTests.Double.Distributions
             var distribution = new uint[101];
             var runs = 100_000_000;
             for (var n = 0; n < runs; n++)
-                distribution[await rng.NextNumber(0UL, 100, dist)]++;
+                distribution[await dist.NextNumber(0UL, 100)]++;
             
             Assert.That(distribution[..^1].Max() - distribution[..^1].Min(), Is.InRange(0, 6_000));
         }
@@ -281,7 +281,7 @@ namespace FastRngTests.Double.Distributions
             var distribution = new uint[101];
             var runs = 100_000_000;
             for (var n = 0; n < runs; n++)
-                distribution[(uint)Math.Floor(await rng.NextNumber(0.0, 100.0, dist))]++;
+                distribution[(uint)Math.Floor(await dist.NextNumber(0.0, 100.0))]++;
             
             Assert.That(distribution[..^1].Max() - distribution[..^1].Min(), Is.InRange(0, 6_000));
         }
