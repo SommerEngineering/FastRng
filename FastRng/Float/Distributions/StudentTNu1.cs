@@ -19,6 +19,10 @@ namespace FastRng.Float.Distributions
             DIVISOR = MathF.Sqrt(NU * MathF.PI) * MathTools.Gamma(NU * 0.5f);
             EXPONENT = -((NU + 1.0f) * 0.5f);
         }
+        
+        public StudentTNu1(IRandom rng) : base(rng)
+        {
+        }
 
         protected override float ShapeFunction(float x) => CONSTANT * MathF.Pow((DIVIDEND / DIVISOR) * MathF.Pow(1.0f + MathF.Pow(START + x * COMPRESS, 2f) / NU, EXPONENT), COMPRESS);
     }

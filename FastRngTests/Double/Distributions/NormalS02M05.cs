@@ -18,10 +18,10 @@ namespace FastRngTests.Double.Distributions
             const double MEAN = 0.5;
             const double STANDARD_DEVIATION = 0.2;
             
-            var dist = new FastRng.Double.Distributions.NormalS02M05();
+            using var rng = new MultiThreadedRng();
+            var dist = new FastRng.Double.Distributions.NormalS02M05(rng);
             var stats = new RunningStatistics();
             var fra = new FrequencyAnalysis();
-            var rng = new MultiThreadedRng();
 
             for (var n = 0; n < 100_000; n++)
             {
@@ -30,7 +30,6 @@ namespace FastRngTests.Double.Distributions
                 fra.CountThis(nextNumber);
             }
 
-            rng.StopProducer();
             fra.NormalizeAndPlotEvents(TestContext.WriteLine);
             
             TestContext.WriteLine($"mean={MEAN} vs. {stats.Mean}");
@@ -45,13 +44,12 @@ namespace FastRngTests.Double.Distributions
         [Category(TestCategories.NORMAL)]
         public async Task TestNormalGeneratorWithRange01()
         {
-            var rng = new MultiThreadedRng();
+            using var rng = new MultiThreadedRng();
             var samples = new double[1_000];
-            var dist = new FastRng.Double.Distributions.NormalS02M05();
+            var dist = new FastRng.Double.Distributions.NormalS02M05(rng);
             for (var n = 0; n < samples.Length; n++)
                 samples[n] = await rng.NextNumber(-1.0, 1.0, dist);
             
-            rng.StopProducer();
             Assert.That(samples.Min(), Is.GreaterThanOrEqualTo(-1.0), "Min is out of range");
             Assert.That(samples.Max(), Is.LessThanOrEqualTo(1.0), "Max is out of range");
         }
@@ -61,30 +59,12 @@ namespace FastRngTests.Double.Distributions
         [Category(TestCategories.NORMAL)]
         public async Task TestNormalGeneratorWithRange02()
         {
-            var rng = new MultiThreadedRng();
+            using var rng = new MultiThreadedRng();
             var samples = new double[1_000];
-            var dist = new FastRng.Double.Distributions.NormalS02M05();
+            var dist = new FastRng.Double.Distributions.NormalS02M05(rng);
             for (var n = 0; n < samples.Length; n++)
                 samples[n] = await rng.NextNumber(0.0, 1.0, dist);
             
-            rng.StopProducer();
-            Assert.That(samples.Min(), Is.GreaterThanOrEqualTo(0.0), "Min is out of range");
-            Assert.That(samples.Max(), Is.LessThanOrEqualTo(1.0), "Max is out of range");
-        }
-        
-        [Test]
-        [Category(TestCategories.COVER)]
-        [Category(TestCategories.NORMAL)]
-        public async Task TestNormalGeneratorWithRange03()
-        {
-            var rng = new MultiThreadedRng();
-            var dist = new FastRng.Double.Distributions.NormalS02M05 { Random = rng }; // Test default parameters
-            
-            var samples = new double[1_000];
-            for (var n = 0; n < samples.Length; n++)
-                samples[n] = await dist.GetDistributedValue();
-            
-            rng.StopProducer();
             Assert.That(samples.Min(), Is.GreaterThanOrEqualTo(0.0), "Min is out of range");
             Assert.That(samples.Max(), Is.LessThanOrEqualTo(1.0), "Max is out of range");
         }
@@ -92,11 +72,9 @@ namespace FastRngTests.Double.Distributions
         [Test]
         [Category(TestCategories.COVER)]
         [Category(TestCategories.NORMAL)]
-        public async Task NoRandomNumberGenerator01()
+        public void NoRandomNumberGenerator01()
         {
-            var dist = new FastRng.Double.Distributions.NormalS02M05();
-            Assert.DoesNotThrowAsync(async () => await dist.GetDistributedValue());
-            Assert.That(await dist.GetDistributedValue(), Is.NaN);
+            Assert.Throws<ArgumentNullException>(() => new FastRng.Double.Distributions.NormalS02M05(null));
         }
     }
 }

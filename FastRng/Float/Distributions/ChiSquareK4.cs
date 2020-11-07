@@ -18,6 +18,10 @@ namespace FastRng.Float.Distributions
             DIVISOR = twoToTheKHalf * gammaKHalf;
         }
 
+        public ChiSquareK4(IRandom rng) : base(rng)
+        {
+        }
+
         protected override float ShapeFunction(float x) => CONSTANT * ((MathF.Pow(x, K_HALF_MINUS_ONE) * MathF.Exp(-x * 0.5f)) / DIVISOR);
     }
 }

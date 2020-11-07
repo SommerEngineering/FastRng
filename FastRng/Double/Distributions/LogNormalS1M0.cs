@@ -16,6 +16,10 @@ namespace FastRng.Double.Distributions
         {
             FACTOR = SIGMA * Math.Sqrt(2 * Math.PI);
         }
+        
+        public LogNormalS1M0(IRandom rng) : base(rng)
+        {
+        }
 
         protected override double ShapeFunction(double x) => (CONSTANT / (x * FACTOR)) * Math.Exp( -(Math.Pow(Math.Log(x) - MU, 2) / (2 * Math.Pow(SIGMA, 2))));
     }

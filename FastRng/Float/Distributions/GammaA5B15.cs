@@ -17,6 +17,10 @@ namespace FastRng.Float.Distributions
             BETA_TO_THE_ALPHA = MathF.Pow(BETA, ALPHA);
         }
 
+        public GammaA5B15(IRandom rng) : base(rng)
+        {
+        }
+        
         protected override float ShapeFunction(float x) => CONSTANT * ((BETA_TO_THE_ALPHA * MathF.Pow(x, ALPHA - 1.0f) * MathF.Exp(-BETA * x)) / GAMMA_ALPHA);
     }
 }

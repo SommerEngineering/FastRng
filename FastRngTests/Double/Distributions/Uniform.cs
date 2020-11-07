@@ -10,8 +10,6 @@ namespace FastRngTests.Double.Distributions
     [ExcludeFromCodeCoverage]
     public class Uniform
     {
-        private readonly IRandom rng = new MultiThreadedRng();
-        
         [Test]
         [Category(TestCategories.COVER)]
         [Category(TestCategories.NORMAL)]
@@ -24,7 +22,7 @@ namespace FastRngTests.Double.Distributions
             
             var stats = new RunningStatistics();
             var fra = new FrequencyAnalysis();
-            var rng = new MultiThreadedRng();
+            using var rng = new MultiThreadedRng();
             
             for (var n = 0; n < 100_000; n++)
             {
@@ -33,7 +31,6 @@ namespace FastRngTests.Double.Distributions
                 fra.CountThis(value);
             }
 
-            rng.StopProducer();
             fra.NormalizeAndPlotEvents(TestContext.WriteLine);
             fra.PlotOccurence(TestContext.WriteLine);
             TestContext.WriteLine($"mean={MEAN} vs. {stats.Mean}");
@@ -61,13 +58,12 @@ namespace FastRngTests.Double.Distributions
             const double P_HIGH = 1.0 - 0.25 * FAILURE_PROBABILITY;
             
             var samples = new double[NUM_ROUNDS];
-            var rng = new MultiThreadedRng();
+            using var rng = new MultiThreadedRng();
             int n;
              
             for (n = 0; n != NUM_ROUNDS; ++n)
                 samples[n] = await rng.GetUniform();
  
-            rng.StopProducer();
             Array.Sort(samples);
 
             var jMinus = 0;
@@ -120,11 +116,11 @@ namespace FastRngTests.Double.Distributions
         public async Task TestUniformGeneratorWithRange01()
         {
             var samples = new double[1_000];
-            var dist = new FastRng.Double.Distributions.Uniform();
+            using var rng = new MultiThreadedRng(); 
+            var dist = new FastRng.Double.Distributions.Uniform(rng);
             for (var n = 0; n < samples.Length; n++)
                 samples[n] = await rng.NextNumber(-1.0, 1.0, dist);
             
-            rng.StopProducer();
             Assert.That(samples.Min(), Is.GreaterThanOrEqualTo(-1.0), "Min is out of range");
             Assert.That(samples.Max(), Is.LessThanOrEqualTo(1.0), "Max is out of range");
         }
@@ -135,42 +131,25 @@ namespace FastRngTests.Double.Distributions
         public async Task TestUniformGeneratorWithRange02()
         {
             var samples = new double[1_000];
-            var dist = new FastRng.Double.Distributions.Uniform();
+            using var rng = new MultiThreadedRng();
+            var dist = new FastRng.Double.Distributions.Uniform(rng);
             for (var n = 0; n < samples.Length; n++)
                 samples[n] = await rng.NextNumber(0.0, 1.0, dist);
             
             Assert.That(samples.Min(), Is.GreaterThanOrEqualTo(0.0), "Min is out of range");
             Assert.That(samples.Max(), Is.LessThanOrEqualTo(1.0), "Max is out of range");
         }
-        
-        [Test]
-        [Category(TestCategories.COVER)]
-        [Category(TestCategories.NORMAL)]
-        public async Task TestUniformGeneratorWithRange03()
-        {
-            var rng = new MultiThreadedRng();
-            var dist = new FastRng.Double.Distributions.Uniform { Random = rng }; // Test default parameters
-            
-            var samples = new double[1_000];
-            for (var n = 0; n < samples.Length; n++)
-                samples[n] = await dist.GetDistributedValue();
-            
-            rng.StopProducer();
-            Assert.That(samples.Min(), Is.GreaterThanOrEqualTo(0.0), "Min is out of range");
-            Assert.That(samples.Max(), Is.LessThanOrEqualTo(1.0), "Max is out of range");
-        }
-        
+
         [Test]
         [Category(TestCategories.COVER)]
         [Category(TestCategories.NORMAL)]
         public async Task TestUniformGeneratorWithRange04()
         {
-            var rng = new MultiThreadedRng();
+            using var rng = new MultiThreadedRng();
             var samples = new double[1_000];
             for (var n = 0; n < samples.Length; n++)
                 samples[n] = await rng.GetUniform();
             
-            rng.StopProducer();
             Assert.That(samples.Min(), Is.GreaterThanOrEqualTo(0.0), "Min is out of range");
             Assert.That(samples.Max(), Is.LessThanOrEqualTo(1.0), "Max is out of range");
         }
@@ -180,7 +159,8 @@ namespace FastRngTests.Double.Distributions
         [Category(TestCategories.NORMAL)]
         public async Task TestRange05Uint()
         {
-            var dist = new FastRng.Double.Distributions.Uniform();
+            using var rng = new MultiThreadedRng();
+            var dist = new FastRng.Double.Distributions.Uniform(rng);
             var distribution = new uint[101];
             var runs = 1_000_000;
             for (var n = 0; n < runs; n++)
@@ -195,7 +175,8 @@ namespace FastRngTests.Double.Distributions
         [Category(TestCategories.NORMAL)]
         public async Task TestRange05Ulong()
         {
-            var dist = new FastRng.Double.Distributions.Uniform();
+            using var rng = new MultiThreadedRng();
+            var dist = new FastRng.Double.Distributions.Uniform(rng);
             var distribution = new uint[101];
             var runs = 1_000_000;
             for (var n = 0; n < runs; n++)
@@ -210,7 +191,8 @@ namespace FastRngTests.Double.Distributions
         [Category(TestCategories.NORMAL)]
         public async Task TestRange05Float()
         {
-            var dist = new FastRng.Double.Distributions.Uniform();
+            using var rng = new MultiThreadedRng();
+            var dist = new FastRng.Double.Distributions.Uniform(rng);
             var distribution = new uint[101];
             var runs = 1_000_000;
             for (var n = 0; n < runs; n++)
@@ -224,7 +206,8 @@ namespace FastRngTests.Double.Distributions
         [Category(TestCategories.NORMAL)]
         public async Task TestDistribution001Uint()
         {
-            var dist = new FastRng.Double.Distributions.Uniform();
+            using var rng = new MultiThreadedRng();
+            var dist = new FastRng.Double.Distributions.Uniform(rng);
             var distribution = new uint[101];
             var runs = 1_000_000;
             for (var n = 0; n < runs; n++)
@@ -237,7 +220,8 @@ namespace FastRngTests.Double.Distributions
         [Category(TestCategories.NORMAL)]
         public async Task TestDistribution001Ulong()
         {
-            var dist = new FastRng.Double.Distributions.Uniform();
+            using var rng = new MultiThreadedRng();
+            var dist = new FastRng.Double.Distributions.Uniform(rng);
             var distribution = new uint[101];
             var runs = 1_000_000;
             for (var n = 0; n < runs; n++)
@@ -250,7 +234,8 @@ namespace FastRngTests.Double.Distributions
         [Category(TestCategories.NORMAL)]
         public async Task TestDistribution001Float()
         {
-            var dist = new FastRng.Double.Distributions.Uniform();
+            using var rng = new MultiThreadedRng();
+            var dist = new FastRng.Double.Distributions.Uniform(rng);
             var distribution = new uint[101];
             var runs = 1_000_000;
             for (var n = 0; n < runs; n++)
@@ -263,7 +248,8 @@ namespace FastRngTests.Double.Distributions
         [Category(TestCategories.LONG_RUNNING)]
         public async Task TestDistribution002Uint()
         {
-            var dist = new FastRng.Double.Distributions.Uniform();
+            using var rng = new MultiThreadedRng();
+            var dist = new FastRng.Double.Distributions.Uniform(rng);
             var distribution = new uint[101];
             var runs = 100_000_000;
             for (var n = 0; n < runs; n++)
@@ -276,7 +262,8 @@ namespace FastRngTests.Double.Distributions
         [Category(TestCategories.LONG_RUNNING)]
         public async Task TestDistribution002Ulong()
         {
-            var dist = new FastRng.Double.Distributions.Uniform();
+            using var rng = new MultiThreadedRng();
+            var dist = new FastRng.Double.Distributions.Uniform(rng);
             var distribution = new uint[101];
             var runs = 100_000_000;
             for (var n = 0; n < runs; n++)
@@ -289,7 +276,8 @@ namespace FastRngTests.Double.Distributions
         [Category(TestCategories.LONG_RUNNING)]
         public async Task TestDistribution002Float()
         {
-            var dist = new FastRng.Double.Distributions.Uniform();
+            using var rng = new MultiThreadedRng();
+            var dist = new FastRng.Double.Distributions.Uniform(rng);
             var distribution = new uint[101];
             var runs = 100_000_000;
             for (var n = 0; n < runs; n++)

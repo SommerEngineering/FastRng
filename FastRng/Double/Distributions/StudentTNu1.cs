@@ -21,6 +21,10 @@ namespace FastRng.Double.Distributions
             DIVISOR = Math.Sqrt(NU * Math.PI) * MathTools.Gamma(NU * 0.5d);
             EXPONENT = -((NU + 1.0d) * 0.5d);
         }
+        
+        public StudentTNu1(IRandom rng) : base(rng)
+        {
+        }
 
         protected override double ShapeFunction(double x) => CONSTANT * Math.Pow((DIVIDEND / DIVISOR) * Math.Pow(1.0d + Math.Pow(START + x * COMPRESS, 2) / NU, EXPONENT), COMPRESS);
     }

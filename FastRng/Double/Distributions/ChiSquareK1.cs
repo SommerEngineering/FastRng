@@ -20,6 +20,10 @@ namespace FastRng.Double.Distributions
             DIVISOR = twoToTheKHalf * gammaKHalf;
         }
 
+        public ChiSquareK1(IRandom rng) : base(rng)
+        {
+        }
+        
         protected override double ShapeFunction(double x) => CONSTANT * ((Math.Pow(x, K_HALF_MINUS_ONE) * Math.Exp(-x * 0.5d)) / DIVISOR);
     }
 }

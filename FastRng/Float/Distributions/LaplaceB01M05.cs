@@ -14,6 +14,10 @@ namespace FastRng.Float.Distributions
         {
             FACTOR_LEFT = CONSTANT / (2.0f * B);
         }
+        
+        public LaplaceB01M05(IRandom rng) : base(rng)
+        {
+        }
 
         protected override float ShapeFunction(float x) => FACTOR_LEFT * MathF.Exp(-MathF.Abs(x - MU) / B);
     }

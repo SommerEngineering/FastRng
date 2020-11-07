@@ -5,8 +5,6 @@ namespace FastRng.Float.Distributions
 {
     public interface IDistribution
     {
-        public IRandom Random { get; set; }
-
         public ValueTask<float> GetDistributedValue(CancellationToken token);
     }
 }

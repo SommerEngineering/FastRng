@@ -19,6 +19,10 @@ namespace FastRng.Double.Distributions
             
             FACTOR_LEFT = CONSTANT * (betaToTheAlpha / gammaAlpha);
         }
+        
+        public InverseGammaA3B05(IRandom rng) : base(rng)
+        {
+        }
 
         protected override double ShapeFunction(double x) => FACTOR_LEFT * Math.Pow(x, -ALPHA - 1.0d) * Math.Exp(-BETA / x);
     }

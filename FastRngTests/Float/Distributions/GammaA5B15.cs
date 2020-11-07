@@ -15,14 +15,13 @@ namespace FastRngTests.Float.Distributions
         [Category(TestCategories.NORMAL)]
         public async Task TestGammaDistribution01()
         {
-            var dist = new FastRng.Float.Distributions.GammaA5B15();
+            using var rng = new MultiThreadedRng();
+            var dist = new FastRng.Float.Distributions.GammaA5B15(rng);
             var fra = new FrequencyAnalysis();
-            var rng = new MultiThreadedRng();
             
             for (var n = 0; n < 100_000; n++)
                 fra.CountThis(await rng.NextNumber(dist));
             
-            rng.StopProducer();
             var result = fra.NormalizeAndPlotEvents(TestContext.WriteLine);
 
             Assert.That(result[0], Is.EqualTo(0.0000929594237282f).Within(0.0008f));
@@ -47,32 +46,14 @@ namespace FastRngTests.Float.Distributions
         [Test]
         [Category(TestCategories.COVER)]
         [Category(TestCategories.NORMAL)]
-        public async Task TestGammaGeneratorWithRange03()
-        {
-            var rng = new MultiThreadedRng();
-            var dist = new FastRng.Float.Distributions.GammaA5B15 { Random = rng }; // Test default parameters
-            
-            var samples = new float[1_000];
-            for (var n = 0; n < samples.Length; n++)
-                samples[n] = await dist.GetDistributedValue();
-            
-            rng.StopProducer();
-            Assert.That(samples.Min(), Is.GreaterThanOrEqualTo(0.0f), "Min is out of range");
-            Assert.That(samples.Max(), Is.LessThanOrEqualTo(1.0f), "Max is out of range");
-        }
-        
-        [Test]
-        [Category(TestCategories.COVER)]
-        [Category(TestCategories.NORMAL)]
         public async Task TestGammaGeneratorWithRange01()
         {
-            var rng = new MultiThreadedRng();
-            var dist = new FastRng.Float.Distributions.GammaA5B15();
+            using var rng = new MultiThreadedRng();
+            var dist = new FastRng.Float.Distributions.GammaA5B15(rng);
             var samples = new float[1_000];
             for (var n = 0; n < samples.Length; n++)
                 samples[n] = await rng.NextNumber(-1.0f, 1.0f, dist);
             
-            rng.StopProducer();
             Assert.That(samples.Min(), Is.GreaterThanOrEqualTo(-1.0f), "Min is out of range");
             Assert.That(samples.Max(), Is.LessThanOrEqualTo(1.0f), "Max is out of range");
         }
@@ -82,13 +63,12 @@ namespace FastRngTests.Float.Distributions
         [Category(TestCategories.NORMAL)]
         public async Task TestGammaGeneratorWithRange02()
         {
-            var rng = new MultiThreadedRng();
-            var dist = new FastRng.Float.Distributions.GammaA5B15();
+            using var rng = new MultiThreadedRng();
+            var dist = new FastRng.Float.Distributions.GammaA5B15(rng);
             var samples = new float[1_000];
             for (var n = 0; n < samples.Length; n++)
                 samples[n] = await rng.NextNumber(0.0f, 1.0f, dist);
             
-            rng.StopProducer();
             Assert.That(samples.Min(), Is.GreaterThanOrEqualTo(0.0f), "Min is out of range");
             Assert.That(samples.Max(), Is.LessThanOrEqualTo(1.0f), "Max is out of range");
         }
@@ -96,11 +76,9 @@ namespace FastRngTests.Float.Distributions
         [Test]
         [Category(TestCategories.COVER)]
         [Category(TestCategories.NORMAL)]
-        public async Task NoRandomNumberGenerator01()
+        public void NoRandomNumberGenerator01()
         {
-            var dist = new FastRng.Float.Distributions.GammaA5B15();
-            Assert.DoesNotThrowAsync(async () => await dist.GetDistributedValue());
-            Assert.That(await dist.GetDistributedValue(), Is.NaN);
+            Assert.Throws<ArgumentNullException>(() => new FastRng.Float.Distributions.GammaA5B15(null));
         }
     }
 }

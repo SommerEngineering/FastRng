@@ -309,8 +309,6 @@ namespace FastRng.Float
             }
             
             var range = rangeEnd - rangeStart;
-            distribution.Random ??= this;
-            
             var distributedValue = await distribution.GetDistributedValue(cancel);
             return (uint) ((distributedValue * range) + rangeStart);
         }
@@ -325,8 +323,6 @@ namespace FastRng.Float
             }
             
             var range = rangeEnd - rangeStart;
-            distribution.Random = this;
-            
             var distributedValue = await distribution.GetDistributedValue(cancel);
             return (ulong) ((distributedValue * range) + rangeStart);
         }
@@ -341,8 +337,6 @@ namespace FastRng.Float
             }
             
             var range = rangeEnd - rangeStart;
-            distribution.Random = this;
-            
             var distributedValue = await distribution.GetDistributedValue(cancel);
             return (distributedValue * range) + rangeStart;
         }

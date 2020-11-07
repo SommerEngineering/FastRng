@@ -39,7 +39,7 @@ namespace FastRngTests.Float
         public async Task Generate1MNormal()
         {
             using var rng = new MultiThreadedRng();
-            var dist = new NormalS02M05();
+            var dist = new NormalS02M05(rng);
             var data = new float[1_000_000];
             var stopwatch = new Stopwatch();
             Thread.Sleep(TimeSpan.FromSeconds(10)); // Warm-up phase of generator
@@ -59,7 +59,7 @@ namespace FastRngTests.Float
         public async Task Generate1MChiSquare()
         {
             using var rng = new MultiThreadedRng();
-            var dist = new ChiSquareK4(); // TODO: Check the impact, when the rng gets set on ctor
+            var dist = new ChiSquareK4(rng);
             var data = new float[1_000_000];
             var stopwatch = new Stopwatch();
             Thread.Sleep(TimeSpan.FromSeconds(10)); // Warm-up phase of generator

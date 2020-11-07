@@ -11,6 +11,10 @@ namespace FastRng.Double.Distributions
         private const double STDDEV = 0.2;
         private const double MEAN = 0.5;
 
+        public NormalS02M05(IRandom rng) : base(rng)
+        {
+        }
+        
         protected override double ShapeFunction(double x) => 1.0 / (STDDEV * SQRT_2_PI) * Math.Exp(-0.5 * Math.Pow((x - MEAN) / STDDEV, 2.0));
     }
 }

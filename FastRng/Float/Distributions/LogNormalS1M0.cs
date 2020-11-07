@@ -14,6 +14,10 @@ namespace FastRng.Float.Distributions
         {
             FACTOR = SIGMA * MathF.Sqrt(2f * MathF.PI);
         }
+        
+        public LogNormalS1M0(IRandom rng) : base(rng)
+        {
+        }
 
         protected override float ShapeFunction(float x) => (CONSTANT / (x * FACTOR)) * MathF.Exp( -(MathF.Pow(MathF.Log(x) - MU, 2f) / (2f * MathF.Pow(SIGMA, 2f))));
     }

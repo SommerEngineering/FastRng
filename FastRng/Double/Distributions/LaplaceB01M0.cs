@@ -16,6 +16,10 @@ namespace FastRng.Double.Distributions
         {
             FACTOR_LEFT = CONSTANT / (2.0d * B);
         }
+        
+        public LaplaceB01M0(IRandom rng) : base(rng)
+        {
+        }
 
         protected override double ShapeFunction(double x) => FACTOR_LEFT * Math.Exp(-Math.Abs(x - MU) / B);
     }

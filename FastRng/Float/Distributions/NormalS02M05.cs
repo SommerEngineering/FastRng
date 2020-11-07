@@ -8,6 +8,10 @@ namespace FastRng.Float.Distributions
         private const float STDDEV = 0.2f;
         private const float MEAN = 0.5f;
 
+        public NormalS02M05(IRandom rng) : base(rng)
+        {
+        }
+        
         protected override float ShapeFunction(float x) => 1.0f / (STDDEV * SQRT_2_PI) * MathF.Exp(-0.5f * MathF.Pow((x - MEAN) / STDDEV, 2.0f));
     }
 }

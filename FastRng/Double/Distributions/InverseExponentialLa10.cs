@@ -9,6 +9,10 @@ namespace FastRng.Double.Distributions
         private const double LAMBDA = 10.0;
         private const double CONSTANT = 4.539992976248453e-06;
 
+        public InverseExponentialLa10(IRandom rng) : base(rng)
+        {
+        }
+        
         protected override double ShapeFunction(double x) => CONSTANT * LAMBDA * Math.Exp(LAMBDA * x);
     }
 }

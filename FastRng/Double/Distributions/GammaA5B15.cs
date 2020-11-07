@@ -18,6 +18,10 @@ namespace FastRng.Double.Distributions
             GAMMA_ALPHA = MathTools.Gamma(ALPHA);
             BETA_TO_THE_ALPHA = Math.Pow(BETA, ALPHA);
         }
+        
+        public GammaA5B15(IRandom rng) : base(rng)
+        {
+        }
 
         protected override double ShapeFunction(double x) => CONSTANT * ((BETA_TO_THE_ALPHA * Math.Pow(x, ALPHA - 1.0d) * Math.Exp(-BETA * x)) / GAMMA_ALPHA);
     }

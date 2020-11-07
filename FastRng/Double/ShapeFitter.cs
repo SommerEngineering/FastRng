@@ -15,11 +15,12 @@ namespace FastRng.Double
         private readonly IRandom rng;
         private readonly double max;
         private readonly double sampleSize;
-        private readonly IDistribution uniform = new Uniform();
+        private readonly IDistribution uniform;
 
         public ShapeFitter(Func<double, double> shapeFunction, IRandom rng, ushort sampleSize = 50)
         {
             this.rng = rng;
+            this.uniform = new Uniform(rng);
             this.sampleSize = sampleSize;
             this.probabilities = new double[sampleSize];
 

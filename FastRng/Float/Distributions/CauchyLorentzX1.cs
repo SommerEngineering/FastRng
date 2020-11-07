@@ -8,6 +8,10 @@ namespace FastRng.Float.Distributions
         private const float SCALE = 0.1f;
         private const float MEDIAN = 1.0f;
 
+        public CauchyLorentzX1(IRandom rng) : base(rng)
+        {
+        }
+        
         protected override float ShapeFunction(float x) => CONSTANT * (1.0f / (MathF.PI * SCALE)) * ((SCALE * SCALE) / (MathF.Pow(x - MEDIAN, 2f) + (SCALE * SCALE)));
     }
 }

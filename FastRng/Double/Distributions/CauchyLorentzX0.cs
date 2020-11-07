@@ -10,6 +10,10 @@ namespace FastRng.Double.Distributions
         private const double SCALE = 0.1;
         private const double MEDIAN = 0.0;
 
+        public CauchyLorentzX0(IRandom rng) : base(rng)
+        {
+        }
+        
         protected override double ShapeFunction(double x) => CONSTANT * (1.0 / (Math.PI * SCALE)) * ((SCALE * SCALE) / (Math.Pow(x - MEDIAN, 2) + (SCALE * SCALE)));
     }
 }

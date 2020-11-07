@@ -17,6 +17,10 @@ namespace FastRng.Float.Distributions
             
             FACTOR_LEFT = CONSTANT * (betaToTheAlpha / gammaAlpha);
         }
+        
+        public InverseGammaA3B05(IRandom rng) : base(rng)
+        {
+        }
 
         protected override float ShapeFunction(float x) => FACTOR_LEFT * MathF.Pow(x, -ALPHA - 1.0f) * MathF.Exp(-BETA / x);
     }

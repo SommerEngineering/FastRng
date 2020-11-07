@@ -39,7 +39,7 @@ namespace FastRngTests.Double
         public async Task Generate1MNormal()
         {
             using var rng = new MultiThreadedRng();
-            var dist = new NormalS02M05();
+            var dist = new NormalS02M05(rng);
             var data = new double[1_000_000];
             var stopwatch = new Stopwatch();
             Thread.Sleep(TimeSpan.FromSeconds(10)); // Warm-up phase of generator
@@ -49,7 +49,6 @@ namespace FastRngTests.Double
                 data[n] = await rng.NextNumber(dist);
             
             stopwatch.Stop();
-            rng.StopProducer();
             
             TestContext.WriteLine($"Generated 1M normal distributed random numbers in {stopwatch.Elapsed.Minutes} minute(s), {stopwatch.Elapsed.Seconds} second(s), and {stopwatch.Elapsed.Milliseconds} milliseconds.");
         }
@@ -59,7 +58,7 @@ namespace FastRngTests.Double
         public async Task Generate1MChiSquare()
         {
             using var rng = new MultiThreadedRng();
-            var dist = new ChiSquareK4();
+            var dist = new ChiSquareK4(rng);
             var data = new double[1_000_000];
             var stopwatch = new Stopwatch();
             Thread.Sleep(TimeSpan.FromSeconds(10)); // Warm-up phase of generator
