@@ -31,7 +31,7 @@ namespace FastRngTests.Float.Distributions
             
             Assert.That(result[21], Is.EqualTo(0.00040973497898f).Within(0.00045f));
             Assert.That(result[22], Is.EqualTo(0.000452827182887f).Within(0.00050f));
-            Assert.That(result[23], Is.EqualTo(0.000500451433441f).Within(0.00051f));
+            Assert.That(result[23], Is.EqualTo(0.000500451433441f).Within(0.0006f));
             
             Assert.That(result[50], Is.EqualTo(0.007446583070924f).Within(0.003f));
             
