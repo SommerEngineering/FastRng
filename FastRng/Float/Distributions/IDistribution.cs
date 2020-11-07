@@ -14,5 +14,7 @@ namespace FastRng.Float.Distributions
         public ValueTask<float> NextNumber(float rangeStart, float rangeEnd, CancellationToken cancel = default);
         
         public ValueTask<float> NextNumber(CancellationToken cancel = default);
+        
+        public ValueTask<bool> HasDecisionBeenMade(float above, float below = 1.0f, CancellationToken cancel = default);
     }
 }

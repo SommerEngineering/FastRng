@@ -61,5 +61,11 @@ namespace FastRng.Float.Distributions
         }
 
         public async ValueTask<float> NextNumber(CancellationToken cancel = default) => await this.NextNumber(0.0f, 1.0f, cancel);
+        
+        public async ValueTask<bool> HasDecisionBeenMade(float above, float below = 1, CancellationToken cancel = default)
+        {
+            var number = await this.NextNumber(cancel);
+            return number > above && number < below;
+        }
     }
 }

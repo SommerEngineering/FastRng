@@ -65,5 +65,11 @@ namespace FastRng.Double.Distributions
         }
 
         public async ValueTask<double> NextNumber(CancellationToken cancel = default) => await this.NextNumber(0.0, 1.0, cancel);
+
+        public async ValueTask<bool> HasDecisionBeenMade(double above, double below = 1, CancellationToken cancel = default)
+        {
+            var number = await this.NextNumber(cancel);
+            return number > above && number < below;
+        }
     }
 }
