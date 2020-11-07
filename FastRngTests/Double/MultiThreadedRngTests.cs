@@ -284,5 +284,32 @@ namespace FastRngTests.Double
             Assert.That(rng1Sample, Is.Not.EquivalentTo(rng3Sample));
             Assert.That(rng2Sample, Is.Not.EquivalentTo(rng3Sample));
         }
+        
+        [Test]
+        [Category(TestCategories.COVER)]
+        [Category(TestCategories.NORMAL)]
+        public async Task TestCancellation01()
+        {
+            var tokenSource = new CancellationTokenSource();
+            var token = tokenSource.Token;
+            tokenSource.Cancel();
+            
+            using var rng2 = new MultiThreadedRng();
+            var dist = new Uniform();
+            Assert.That(await rng2.NextNumber(1, 100_000, dist, token), Is.EqualTo(0));
+        }
+        
+        [Test]
+        [Category(TestCategories.COVER)]
+        [Category(TestCategories.NORMAL)]
+        public async Task TestCancellation02()
+        {
+            var tokenSource = new CancellationTokenSource();
+            var token = tokenSource.Token;
+            tokenSource.Cancel();
+            
+            using var rng2 = new MultiThreadedRng();
+            Assert.That(await rng2.GetUniform(token), Is.NaN);
+        }
     }
 }
