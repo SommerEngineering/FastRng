@@ -2,6 +2,43 @@
 
 FastRng is a multi-threaded pseudo-random number generator. Besides the generation of uniformly distributed random numbers, there are several other distributions to choose from. For performance reasons the parameters of the distributions are not user-definable. For some distributions, therefore, different parameter variations are available. If a different combination is desired, a separate class can be created.
 
+Please note, that Math.NET's (https://www.mathdotnet.com/) random number generator is in some situations faster. Unlike Math.NET, MultiThreadedRng is multi-threaded and async. Consumers can await the next number without blocking resources. Additionally, consumers can use a token to cancel e.g. timeout an operation as well.
+
+FastRng (class `MultiThreadedRng`) using a shape fitter (a rejection sampler) to enforce arbitrary shapes of probabilities for desired distributions. By using the shape fitter, it is even easy to define discontinuous, arbitrary functions as shapes. Any consumer can define and use own distributions.
+
+The class `MultiThreadedRng` uses the George Marsaglia's MWC algorithm. The algorithm's implementation based loosely on John D. Cook's (johndcook.com) [implementation](https://www.codeproject.com/Articles/25172/Simple-Random-Number-Generation). Thanks John for the inspiration.
+
+Please notice: When using the debug environment, MultiThreadedRng uses a smaller buffer size. Please ensure, that the production environment uses a release build, though.
+
+## Usage
+Example code:
+
+```
+using FastRng.Float;
+using FastRng.Float.Distributions;
+
+[...]
+
+using var rng = new MultiThreadedRng();
+var dist = new ChiSquareK1(rng);
+
+var value1 = await dist.NextNumber();
+var value2 = await dist.NextNumber(rangeStart: -1.0f, rangeEnd: 1.0f);
+if(await dist.HasDecisionBeenMade(above: 0.8f, below: 0.9f))
+{
+    // Decision has been made
+}
+```
+
+Notes:
+- `MultiThreadedRng` and all distributions are available as `float` and `double` variations. Both are supporting `uint` and `ulong` as well.
+
+- `MultiThreadedRng` is `IDisposable`. It is important to call `Dispose`, when the generator is not needed anymore. Otherwise, the supporting background threads are still running.
+
+- `MultiThreadedRng` fills some buffers after creation. Thus, create and reuse it as long as needed. Avoid useless re-creation.
+
+- Distributions need some time at creation to calculate probabilities. Thus, just create a distribution once and use reuse it. Avoid useless re-creation.
+
 ## Available Distributions
 
 ### Normal Distribution (std. dev.=0.2, mean=0.5)
